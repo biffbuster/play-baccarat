@@ -489,7 +489,7 @@
         <div class="tab-panel-title">The initial deal <span class="cn">· four cards, face-up</span></div>
         <div class="tab-panel-desc">The dealer burns the top card, then deals <strong>two cards to Player</strong> and <strong>two to Banker</strong>, alternating — Player first. In Punto Banco, all cards land face-up immediately.</div>
       </div>
-      <button class="tab-replay" onclick="dealFlow('flow-1')">↻ Replay</button>
+      <button class="tab-replay" data-replay="flow-1">↻ Replay</button>
     </div>
     <div class="hand-layout">
       <div class="hand-side">
@@ -512,7 +512,7 @@
         <div class="tab-panel-title">Check for a Natural <span class="cn">· 8 or 9 ends it</span></div>
         <div class="tab-panel-desc">If either hand totals <strong>8 or 9</strong> on the first two cards, that's a <em>natural</em>. No more cards are drawn; whichever total is higher wins. Ties push. A 9 always beats an 8.</div>
       </div>
-      <button class="tab-replay" onclick="dealFlow('flow-2')">↻ Replay</button>
+      <button class="tab-replay" data-replay="flow-2">↻ Replay</button>
     </div>
     <div class="hand-layout">
       <div class="hand-side">
@@ -539,7 +539,7 @@
         <div class="tab-panel-title">Player acts first <span class="cn">· draw on 0–5, stand on 6–7</span></div>
         <div class="tab-panel-desc">No natural? Then Player's rule is simple. With a two-card total of <strong>0–5</strong>, draw a third card. With <strong>6 or 7</strong>, stand. No choice — the tableau does the thinking.</div>
       </div>
-      <button class="tab-replay" onclick="dealFlow('flow-3')">↻ Replay</button>
+      <button class="tab-replay" data-replay="flow-3">↻ Replay</button>
     </div>
     <div class="hand-layout">
       <div class="hand-side">
@@ -562,7 +562,7 @@
         <div class="tab-panel-title">Banker's rule is <span class="cn">· more elaborate</span></div>
         <div class="tab-panel-desc">Banker's draw depends on <em>both</em> Banker's total <em>and</em> Player's third card. This is the famous <strong>tableau</strong> — detailed in the next section — but the short version is below.</div>
       </div>
-      <button class="tab-replay" onclick="dealFlow('flow-4')">↻ Replay</button>
+      <button class="tab-replay" data-replay="flow-4">↻ Replay</button>
     </div>
     <div class="hand-layout">
       <div class="hand-side">
@@ -585,7 +585,7 @@
         <div class="tab-panel-title">Settle the bets <span class="cn">· closest to 9 wins</span></div>
         <div class="tab-panel-desc">Both hands revealed. <strong>Highest total wins.</strong> Player pays 1:1. Banker pays 1:1 minus a 5% commission (so really 0.95:1). Tie pays 8:1. Losing side loses the full bet. A tie pushes Player and Banker bets — they're returned.</div>
       </div>
-      <button class="tab-replay" onclick="dealFlow('flow-5')">↻ Replay</button>
+      <button class="tab-replay" data-replay="flow-5">↻ Replay</button>
     </div>
     <div class="hand-layout">
       <div class="hand-side">

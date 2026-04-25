@@ -200,6 +200,13 @@ function wireTabs(containerId, onActivate) {
 wireTabs('value-tabs');
 wireTabs('flow-tabs', (id) => dealFlow(id));
 
+/* Delegated handler for the section-04 "↻ Replay" buttons. Replaces
+   inline onclick="dealFlow(...)" so the page works under a strict CSP
+   (no script-src 'unsafe-inline' needed). */
+document.querySelectorAll('.tab-replay[data-replay]').forEach(btn => {
+  btn.addEventListener('click', () => dealFlow(btn.dataset.replay));
+});
+
 /* -------- Flow section card deals -------- */
 const flowDeals = {
   'flow-1': { player: ['7H', '5S'], banker: ['9C', '4D'], note: 'Player 12→2 · Banker 13→3' },

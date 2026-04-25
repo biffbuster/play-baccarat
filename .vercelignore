@@ -1,0 +1,22 @@
+.git
+.github
+.claude
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Editor / OS
+*.swp
+*.swo
+
+# Local logs
+*.log
+
+# Local env (defence in depth — none should exist, but if they do, never deploy)
+.env
+.env.*
+
+# Heavy source assets that aren't loaded at runtime — keep deploys lean
+baccarat_table_virtual_casino_asset_pack.glb
+media/hero-chips.original.mp4
