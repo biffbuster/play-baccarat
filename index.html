@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Baccarat · The Gentleman's Game</title>
+<meta name="description" content="An interactive guide to baccarat — from the shoe to the simulator. Punto Banco rules, drawing tableau, betting systems, legends, and a live dealer engine." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="src/css/baccarat.css">
+</head>
+<body>
+
+<div class="app">
+
+<!-- ═══════════════════════════ TOP NAV ═══════════════════════════ -->
+<header class="topbar" id="topbar">
+  <div class="topbar-inner">
+    <a class="brand" data-target="hero">
+      <div class="brand-mark">B</div>
+      <div class="brand-text">
+        <span class="brand-title">Baccarat</span>
+        <span class="brand-sub">百家樂</span>
+      </div>
+    </a>
+
+    <button class="topbar-burger" id="topbarBurger" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="topnav" id="topnav">
+      <div class="topnav-item">
+        <button class="topnav-trigger" data-menu="start">Start <span class="topnav-caret">▾</span></button>
+        <div class="topnav-dropdown" data-menu-panel="start">
+          <div class="topnav-dropdown-label">New to baccarat? Begin here.</div>
+          <a class="nav-item" data-target="sec-welcome"><span class="nav-num">01</span>Welcome</a>
+          <a class="nav-item" data-target="sec-values"><span class="nav-num">02</span>The Cards</a>
+          <a class="nav-item" data-target="sec-table"><span class="nav-num">03</span>The Table</a>
+        </div>
+      </div>
+
+      <div class="topnav-item">
+        <button class="topnav-trigger" data-menu="game">The Game <span class="topnav-caret">▾</span></button>
+        <div class="topnav-dropdown" data-menu-panel="game">
+          <div class="topnav-dropdown-label">How a hand actually plays out.</div>
+          <a class="nav-item" data-target="sec-flow"><span class="nav-num">04</span>One Full Coup</a>
+          <a class="nav-item" data-target="sec-tableau"><span class="nav-num">05</span>The Drawing Rules</a>
+          <a class="nav-item" data-target="sec-deck"><span class="nav-num">06</span>The Shoe</a>
+        </div>
+      </div>
+
+      <div class="topnav-item">
+        <button class="topnav-trigger" data-menu="strategy">Strategy <span class="topnav-caret">▾</span></button>
+        <div class="topnav-dropdown" data-menu-panel="strategy">
+          <div class="topnav-dropdown-label">For when you're ready to bet smart.</div>
+          <a class="nav-item" data-target="sec-bets"><span class="nav-num">07</span>Bets &amp; House Edge</a>
+          <a class="nav-item" data-target="sec-strategy"><span class="nav-num">08</span>Betting Systems</a>
+          <a class="nav-item" data-target="sec-roads"><span class="nav-num">09</span>Reading the Roads</a>
+          <a class="nav-item" data-target="sec-etiquette"><span class="nav-num">10</span>Focus</a>
+        </div>
+      </div>
+
+    </nav>
+
+    <div class="topnav-actions">
+      <div class="topnav-item topnav-item-settings">
+        <button class="topnav-trigger" data-menu="settings" aria-label="Settings"><span class="topnav-gear">⚙</span></button>
+        <div class="topnav-dropdown topnav-dropdown-right" data-menu-panel="settings">
+          <div class="topnav-dropdown-label">Theme</div>
+          <div class="theme-picker">
+            <div class="theme-option active" data-theme="lacquer">Lacquer</div>
+            <div class="theme-option" data-theme="lightgold">Light Gold</div>
+            <div class="theme-option" data-theme="ivory">Ivory</div>
+          </div>
+          <div class="topnav-dropdown-divider"></div>
+          <button class="settings-action" type="button" data-action="replay-tour">↺ Replay intro tour</button>
+        </div>
+      </div>
+
+      <a class="topnav-cta nav-item" data-target="sec-sim">Play ▸</a>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════ INTRO TOUR ═══════════════════════════ -->
+<div class="tour" id="tour" hidden aria-hidden="true">
+  <div class="tour-backdrop" id="tourBackdrop"></div>
+  <div class="tour-card" id="tourCard" role="dialog" aria-modal="true" aria-labelledby="tourTitle">
+    <div class="tour-progress">
+      <span class="tour-step-current" id="tourStepNum">1</span>
+      <span class="tour-step-sep">/</span>
+      <span class="tour-step-total" id="tourStepTotal">5</span>
+      <span class="tour-progress-label">Quick tour</span>
+    </div>
+    <h3 class="tour-title" id="tourTitle">Welcome — quick tour?</h3>
+    <p class="tour-body" id="tourBody">I'll point out the four sections that matter most. About 30 seconds. Hit Next to begin.</p>
+    <div class="tour-dots" id="tourDots"></div>
+    <div class="tour-controls">
+      <button class="tour-skip" id="tourSkip" type="button">Skip</button>
+      <div class="tour-nav-buttons">
+        <button class="tour-back" id="tourBack" type="button" hidden>← Back</button>
+        <button class="tour-next" id="tourNext" type="button">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ MAIN ═══════════════════════════ -->
+<main class="main">
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <!-- Background image — top portion of the casino salon (chandeliers).
+       Masked so the bottom half fades to transparent. -->
+  <div class="hero-bg-image" aria-hidden="true"></div>
+  <!-- Spinning chips video, layered over the background. -->
+  <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="">
+    <source src="media/hero-chips.mp4" type="video/mp4">
+  </video>
+  <!-- Subtle smoke + warm wash retained for motion. The CSS chandelier
+       halos are removed since the bg image already provides them. -->
+  <div class="hero-ambience" aria-hidden="true">
+    <div class="hero-warm-wash"></div>
+    <div class="hero-smoke hero-smoke-1"></div>
+    <div class="hero-smoke hero-smoke-2"></div>
+    <div class="hero-smoke hero-smoke-3"></div>
+  </div>
+  <div class="hero-vignette"></div>
+  <div class="hero-content">
+    <div class="hero-kicker">A Beginner's Field Guide on</div>
+    <h1 class="hero-title hero-title-mark" id="heroTitle">Baccarat</h1>
+    <p class="hero-sub">the simplest game in the casino</p>
+    <div class="hero-rule" aria-hidden="true">
+      <span class="hero-rule-line"></span>
+      <span class="hero-rule-mark">&#10070;</span>
+      <span class="hero-rule-line"></span>
+    </div>
+    <p class="hero-lede">An introduction to the rules, odds, and discipline. No strategy, no skill &mdash; you wager on which of two hands finishes closer to nine.</p>
+  </div>
+  <div class="hero-scroll">
+    Scroll to deal
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══ SEC WELCOME — beginner intro ═══ -->
+<section class="section" id="sec-welcome">
+  <div class="section-header">
+    <div class="section-kicker">Section 01 · Start Here</div>
+    <h1 class="section-title">Baccarat in <em>three minutes.</em></h1>
+    <p class="section-lede">Baccarat is the simplest card game in the casino. You don't play the cards — you bet on which of two hands will win. The dealer does everything. No strategy, no decisions, no skill required.</p>
+  </div>
+
+  <div class="welcome-grid">
+
+    <!-- Panel 1 — what is baccarat -->
+    <div class="welcome-panel">
+      <div class="welcome-step">01</div>
+      <h2 class="welcome-title">What is the game?</h2>
+      <p class="welcome-body">Two hands are dealt: one called <strong>Player</strong>, the other called <strong>Banker</strong>. They have nothing to do with you — they're just labels for two stacks of cards. Whichever hand ends up closer to a total of <strong>9</strong> wins. Your only job is to bet on which one.</p>
+      <div class="welcome-bets">
+        <div class="welcome-bet welcome-bet-player">
+          <div class="welcome-bet-label">Bet on</div>
+          <div class="welcome-bet-name">Player</div>
+          <div class="welcome-bet-pay">pays 1 : 1</div>
+        </div>
+        <div class="welcome-bet welcome-bet-banker">
+          <div class="welcome-bet-label">Bet on</div>
+          <div class="welcome-bet-name">Banker</div>
+          <div class="welcome-bet-pay">pays 0.95 : 1</div>
+        </div>
+        <div class="welcome-bet welcome-bet-tie">
+          <div class="welcome-bet-label">Bet on</div>
+          <div class="welcome-bet-name">Tie</div>
+          <div class="welcome-bet-pay">pays 8 : 1</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 2 — what the cards count -->
+    <div class="welcome-panel">
+      <div class="welcome-step">02</div>
+      <h2 class="welcome-title">What do the cards count?</h2>
+      <p class="welcome-body">Forget Blackjack. In baccarat the math is simpler than it looks: count up the cards, drop the tens digit. A hand is always worth <strong>0–9</strong>. That's it.</p>
+      <div class="welcome-cardrow">
+        <div class="welcome-cardgroup">
+          <img class="welcome-card-svg" src="poker/AS.svg" alt="Ace of Spades">
+          <div class="welcome-card-val">= <strong>1</strong></div>
+        </div>
+        <div class="welcome-cardgroup">
+          <img class="welcome-card-svg" src="poker/7H.svg" alt="Seven of Hearts">
+          <div class="welcome-card-val">= <strong>7</strong></div>
+        </div>
+        <div class="welcome-cardgroup">
+          <img class="welcome-card-svg" src="poker/KS.svg" alt="King of Spades">
+          <div class="welcome-card-val">= <strong>0</strong></div>
+        </div>
+      </div>
+      <p class="welcome-fineprint">Aces = 1 · 2 through 9 = face value · 10 / J / Q / K = 0 · Suits don't matter.</p>
+      <div class="welcome-example">
+        <span><strong>7 + 8 = 15</strong></span>
+        <span class="welcome-arrow">→</span>
+        <span class="welcome-example-result">drop the 1, hand is worth <strong>5</strong></span>
+      </div>
+    </div>
+
+    <!-- Panel 3 — what happens at the table -->
+    <div class="welcome-panel">
+      <div class="welcome-step">03</div>
+      <h2 class="welcome-title">What happens at the table?</h2>
+      <ol class="welcome-steps">
+        <li><strong>Place your bet</strong> on Player, Banker, or Tie.</li>
+        <li>The dealer deals <strong>two cards each</strong> to Player and Banker, face up.</li>
+        <li>Sometimes a <strong>third card</strong> is drawn — but you don't decide. The dealer follows a fixed rule called the <em>tableau</em>.</li>
+        <li>Whichever hand is closest to <strong>9</strong> wins. Winning bets get paid; losing bets are collected. Next hand.</li>
+      </ol>
+      <a class="welcome-cta nav-item" data-target="sec-sim">Try a hand in the simulator ▸</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SEC DECK ═══ -->
+<section class="section" id="sec-deck">
+  <div class="section-header">
+    <div class="section-kicker">Section 06 · The Shoe</div>
+    <h1 class="section-title">What's in <em>the shoe?</em></h1>
+    <p class="section-lede">A baccarat shoe holds <strong>6 or 8 standard 52-card decks</strong>, shuffled together — <em>312 to 416 cards</em>. Suits are ignored; only the rank matters. Every draw follows a fixed table called the <em>tableau</em>, so the dealer never decides.</p>
+  </div>
+
+  <!-- Deck spread: stacked face-down cards fan out into a row when the
+       section enters viewport (mirrors the Framer CardDeckSpread mechanic).
+       Each card is rendered as a CSS-built red lacquer back. -->
+  <div class="deck-spread" id="deckSpread" data-cards="8" aria-hidden="true">
+    <div class="deck-spread-track">
+      <div class="deck-spread-card deck-spread-back" data-i="0"></div>
+      <div class="deck-spread-card deck-spread-back" data-i="1"></div>
+      <div class="deck-spread-card deck-spread-back" data-i="2"></div>
+      <div class="deck-spread-card deck-spread-back" data-i="3"></div>
+      <div class="deck-spread-card deck-spread-back" data-i="4"></div>
+      <div class="deck-spread-card deck-spread-back" data-i="5"></div>
+      <div class="deck-spread-card deck-spread-back" data-i="6"></div>
+      <div class="deck-spread-card deck-spread-back" data-i="7"></div>
+    </div>
+    <div class="deck-spread-caption">
+      <span class="deck-spread-caption-line"></span>
+      <span class="deck-spread-caption-text">8 decks shuffled together · 416 cards in play</span>
+    </div>
+  </div>
+
+  <p class="prose">The dealer places a <span class="term" tabindex="0"><span class="term-label">cut card</span><span class="term-pop" role="tooltip"><strong class="term-pop-title">The Cut Card</strong>A coloured marker slipped near the back of the shoe before play begins. When it surfaces during a coup, the current hand is finished and the shoe is then re-shuffled.</span></span> near the back of the shoe. When it appears, the current hand finishes and the shoe is re-shuffled. Before the first hand, the first card is turned face-up; its value tells the dealer how many cards to <span class="term" tabindex="0"><span class="term-label">burn</span><span class="term-pop" role="tooltip"><strong class="term-pop-title">The Burn</strong>To discard cards face-down from the top of the shoe before the first hand. The first card is flipped face-up and its value sets how many cards follow it into the discard tray.</span></span>. The burn has no effect on odds — it's tradition.</p>
+
+
+  <div class="callout gold">
+    <div class="callout-title">A note on names</div>
+    <div class="callout-body">"Baccarat" (<em>bah-cah-RAH</em>) is Italian for <strong>zero</strong> — the worst possible total. In Chinese casinos it is <em>百家樂 (bǎijiālè)</em>, literally "hundred-family happiness." The game's Macau monopoly is absolute: over 90% of all Macau casino revenue flows through baccarat tables.</div>
+  </div>
+</section>
+
+<!-- ═══ SEC VALUES ═══ -->
+<section class="section" id="sec-values">
+  <div class="section-header">
+    <div class="section-kicker">Section 02 · The Cards</div>
+    <h1 class="section-title">How do <em>cards count?</em></h1>
+    <p class="section-lede">Baccarat uses the <em>modulo-10</em> rule. Every card has a value, totals are added, and only the <strong>last digit</strong> of the sum counts. A hand is always worth zero through nine — never more.</p>
+  </div>
+
+  <div class="values-stage" id="valuesStage">
+    <div class="values-stage-inner">
+      <div class="values-track">
+        <article class="value-card-large" data-value-step="0">
+          <div class="value-card-large-info">
+            <div class="value-card-large-label">Ace</div>
+            <h3 class="value-card-large-title">Counts as 1</h3>
+            <p class="value-card-large-sub">One point — always. The Ace is the only court-or-A card that doesn't count zero.</p>
+          </div>
+          <div class="value-card-large-art">
+            <img class="value-card-large-svg" src="poker/AS.svg" alt="Ace of Spades">
+            <div class="value-card-large-glow" aria-hidden="true"></div>
+          </div>
+        </article>
+
+        <article class="value-card-large" data-value-step="1">
+          <div class="value-card-large-info">
+            <div class="value-card-large-label">Number Cards · 2–9</div>
+            <h3 class="value-card-large-title">Worth their face value</h3>
+            <p class="value-card-large-sub">A 7 is worth seven, a 5 is worth five. Suits never matter — only the rank.</p>
+          </div>
+          <div class="value-card-large-art">
+            <img class="value-card-large-svg" src="poker/7H.svg" alt="Seven of Hearts">
+            <div class="value-card-large-glow" aria-hidden="true"></div>
+          </div>
+        </article>
+
+        <article class="value-card-large" data-value-step="2">
+          <div class="value-card-large-info">
+            <div class="value-card-large-label">Tens &amp; Courts</div>
+            <h3 class="value-card-large-title">All count as 0</h3>
+            <p class="value-card-large-sub">10, Jack, Queen, King — every face card adds nothing. This is what makes baccarat math feel odd at first.</p>
+          </div>
+          <div class="value-card-large-art">
+            <img class="value-card-large-svg" src="poker/KS.svg" alt="King of Spades">
+            <div class="value-card-large-glow" aria-hidden="true"></div>
+          </div>
+        </article>
+      </div>
+      <div class="values-progress" aria-hidden="true">
+        <span class="values-progress-dot is-active" data-step="0"></span>
+        <span class="values-progress-dot" data-step="1"></span>
+        <span class="values-progress-dot" data-step="2"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="modulo-section-head">
+    <h2 class="sub-title">The modulo-10 rule, in four hands</h2>
+    <p class="modulo-section-sub">Each tab works through one example — when totals double up, what court cards add (zero), and when a hand ends on the spot.</p>
+  </div>
+
+  <div class="tabs tabs--pills" id="value-tabs" role="tablist">
+    <button class="tab active" data-tab="val-1" role="tab" aria-selected="true">
+      <span class="tab-cn">例一</span>
+      <span class="tab-label">6 + 8</span>
+    </button>
+    <button class="tab" data-tab="val-2" role="tab" aria-selected="false">
+      <span class="tab-cn">例二</span>
+      <span class="tab-label">King + 5</span>
+    </button>
+    <button class="tab" data-tab="val-3" role="tab" aria-selected="false">
+      <span class="tab-cn">例三</span>
+      <span class="tab-label">9 + 9</span>
+    </button>
+    <button class="tab" data-tab="val-4" role="tab" aria-selected="false">
+      <span class="tab-cn">例四</span>
+      <span class="tab-label">Natural 8</span>
+    </button>
+  </div>
+
+  <div class="tab-panel tab-panel--modulo active" id="val-1" role="tabpanel">
+    <div class="modulo-layout">
+      <div class="modulo-stage">
+        <div class="modulo-felt">
+          <div class="modulo-felt-mark">Player</div>
+          <div class="modulo-cards">
+            <div class="p-card svg red" style="--w: 152px;"><img class="p-card-art" src="poker/6H.svg" alt="6 of Hearts" draggable="false"></div>
+            <span class="modulo-plus">+</span>
+            <div class="p-card svg black" style="--w: 152px;"><img class="p-card-art" src="poker/8S.svg" alt="8 of Spades" draggable="false"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modulo-info">
+        <div class="modulo-info-eyebrow">例一 · Example one</div>
+        <h3 class="modulo-info-title">Drop the tens digit</h3>
+        <p class="modulo-info-body">A 6 and an 8 add to 14. Drop the leading "1" and the hand is worth 4. Any total of ten or more loses its first digit — that's the entire modulo-10 rule, in one move.</p>
+        <div class="modulo-info-result">
+          <span class="modulo-info-result-eq">=</span>
+          <span class="modulo-info-result-val">4</span>
+          <span class="modulo-info-result-label">Hand value</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel tab-panel--modulo" id="val-2" role="tabpanel">
+    <div class="modulo-layout">
+      <div class="modulo-stage">
+        <div class="modulo-felt">
+          <div class="modulo-felt-mark">Player</div>
+          <div class="modulo-cards">
+            <div class="p-card svg black" style="--w: 152px;"><img class="p-card-art" src="poker/KS.svg" alt="King of Spades" draggable="false"></div>
+            <span class="modulo-plus">+</span>
+            <div class="p-card svg red" style="--w: 152px;"><img class="p-card-art" src="poker/5D.svg" alt="5 of Diamonds" draggable="false"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modulo-info">
+        <div class="modulo-info-eyebrow">例二 · Example two</div>
+        <h3 class="modulo-info-title">Court cards count zero</h3>
+        <p class="modulo-info-body">A King is worth ten — and ten is the same as zero in this game. So a King and a 5 is just 0 + 5 = 5. Tens, Jacks, Queens, Kings: every face-card adds nothing.</p>
+        <div class="modulo-info-result">
+          <span class="modulo-info-result-eq">=</span>
+          <span class="modulo-info-result-val">5</span>
+          <span class="modulo-info-result-label">Hand value</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel tab-panel--modulo" id="val-3" role="tabpanel">
+    <div class="modulo-layout">
+      <div class="modulo-stage">
+        <div class="modulo-felt">
+          <div class="modulo-felt-mark">Player</div>
+          <div class="modulo-cards">
+            <div class="p-card svg black" style="--w: 152px;"><img class="p-card-art" src="poker/9C.svg" alt="9 of Clubs" draggable="false"></div>
+            <span class="modulo-plus">+</span>
+            <div class="p-card svg red" style="--w: 152px;"><img class="p-card-art" src="poker/9H.svg" alt="9 of Hearts" draggable="false"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modulo-info">
+        <div class="modulo-info-eyebrow">例三 · Example three</div>
+        <h3 class="modulo-info-title">Two nines is an 8 — not 18</h3>
+        <p class="modulo-info-body">9 + 9 = 18. Drop the 1 and you're left with 8. It looks like a monster hand at first glance, but a natural <em>nine</em> on the other side will still beat it.</p>
+        <div class="modulo-info-result">
+          <span class="modulo-info-result-eq">=</span>
+          <span class="modulo-info-result-val">8</span>
+          <span class="modulo-info-result-label">Hand value</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel tab-panel--modulo" id="val-4" role="tabpanel">
+    <div class="modulo-layout">
+      <div class="modulo-stage">
+        <div class="modulo-felt">
+          <div class="modulo-felt-mark modulo-felt-mark-natural">Natural · stand</div>
+          <div class="modulo-cards">
+            <div class="p-card svg black" style="--w: 152px;"><img class="p-card-art" src="poker/3S.svg" alt="3 of Spades" draggable="false"></div>
+            <span class="modulo-plus">+</span>
+            <div class="p-card svg red" style="--w: 152px;"><img class="p-card-art" src="poker/5H.svg" alt="5 of Hearts" draggable="false"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modulo-info">
+        <div class="modulo-info-eyebrow">例四 · Example four</div>
+        <h3 class="modulo-info-title">A natural ends the hand</h3>
+        <p class="modulo-info-body">Any two-card total of <strong>8 or 9</strong> is called a <em>natural</em>. The coup ends right there — no third card is drawn for either side, no further plays. Closest to nine wins outright.</p>
+        <div class="modulo-info-result">
+          <span class="modulo-info-result-eq">=</span>
+          <span class="modulo-info-result-val">8</span>
+          <span class="modulo-info-result-label">Hand value</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SEC TABLE : 3D scroll stage ═══ -->
+<section class="section" id="sec-table" style="max-width: none; padding: 32px 0 0;">
+  <div style="max-width: var(--content-max); margin: 0 auto; padding: 0 48px;">
+    <div class="section-header" style="margin-bottom: 18px;">
+      <div class="section-kicker">Section 03 · The Table</div>
+      <h1 class="section-title">Your seat at <em>the salon.</em></h1>
+      <p class="section-lede">Scroll through the six steps below to walk a single <em>coup</em> — one complete hand, from wager to payout.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3D STAGE SCROLLYTELLING -->
+<div class="stage" id="stage">
+  <div class="stage-sticky">
+    <canvas id="stageCanvas"></canvas>
+    <div class="stage-progress"><div class="stage-progress-bar" id="stageBar"></div></div>
+    <div class="stage-overlay">
+      <div class="stage-panel" id="stagePanel" data-pos="right">
+        <div class="stage-panel-float">
+          <div class="stage-step" id="stageStep">Step 01 of 06</div>
+          <div class="stage-title" id="stageTitle">Place your wager</div>
+          <div class="stage-body" id="stageBody">Three bets: <strong>Punto</strong> (Player), <strong>Banco</strong> (Banker), or <strong>Egalité</strong> (Tie). You pick which <em>hand</em> wins — Player and Banker are just labels, not sides you play.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SEC FLOW ═══ -->
+<section class="section" id="sec-flow">
+  <div class="section-header">
+    <div class="section-kicker">Section 04 · One Full Coup</div>
+    <h1 class="section-title">Anatomy of <em>a single hand.</em></h1>
+    <p class="section-lede">Every baccarat hand (a <em>coup</em>) runs the same way: four cards face-up, totals compared, a possible third card — all on fixed rules, never player choice.</p>
+  </div>
+
+  <div class="tabs" id="flow-tabs">
+    <button class="tab active" data-tab="flow-1"><span class="tab-cn">一</span>Deal</button>
+    <button class="tab" data-tab="flow-2"><span class="tab-cn">二</span>Natural?</button>
+    <button class="tab" data-tab="flow-3"><span class="tab-cn">三</span>Player draws</button>
+    <button class="tab" data-tab="flow-4"><span class="tab-cn">四</span>Banker draws</button>
+    <button class="tab" data-tab="flow-5"><span class="tab-cn">五</span>Settle</button>
+  </div>
+
+  <div class="tab-panel active" id="flow-1">
+    <div class="tab-panel-head">
+      <div>
+        <div class="tab-panel-title">The initial deal <span class="cn">· four cards, face-up</span></div>
+        <div class="tab-panel-desc">The dealer burns the top card, then deals <strong>two cards to Player</strong> and <strong>two to Banker</strong>, alternating — Player first. In Punto Banco, all cards land face-up immediately.</div>
+      </div>
+      <button class="tab-replay" onclick="dealFlow('flow-1')">↻ Replay</button>
+    </div>
+    <div class="hand-layout">
+      <div class="hand-side">
+        <div class="hand-label player">punto · player</div>
+        <div class="hand-cards" id="flow1-player"></div>
+        <div class="hand-total player" id="flow1-player-total"><span class="lbl">Total</span>—</div>
+      </div>
+      <div class="hand-vs"><div class="hand-vs-dot">vs</div></div>
+      <div class="hand-side">
+        <div class="hand-label banker">banco · banker</div>
+        <div class="hand-cards" id="flow1-banker"></div>
+        <div class="hand-total banker" id="flow1-banker-total"><span class="lbl">Total</span>—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="flow-2">
+    <div class="tab-panel-head">
+      <div>
+        <div class="tab-panel-title">Check for a Natural <span class="cn">· 8 or 9 ends it</span></div>
+        <div class="tab-panel-desc">If either hand totals <strong>8 or 9</strong> on the first two cards, that's a <em>natural</em>. No more cards are drawn; whichever total is higher wins. Ties push. A 9 always beats an 8.</div>
+      </div>
+      <button class="tab-replay" onclick="dealFlow('flow-2')">↻ Replay</button>
+    </div>
+    <div class="hand-layout">
+      <div class="hand-side">
+        <div class="hand-label player">punto · player</div>
+        <div class="hand-cards" id="flow2-player"></div>
+        <div class="hand-total player" id="flow2-player-total"><span class="lbl">Natural</span>—</div>
+      </div>
+      <div class="hand-vs"><div class="hand-vs-dot">vs</div></div>
+      <div class="hand-side">
+        <div class="hand-label banker">banco · banker</div>
+        <div class="hand-cards" id="flow2-banker"></div>
+        <div class="hand-total banker" id="flow2-banker-total"><span class="lbl">Total</span>—</div>
+      </div>
+    </div>
+    <div class="callout jade">
+      <div class="callout-title">The Natural</div>
+      <div class="callout-body">In this deal, Player shows a <strong>9</strong> — the strongest natural. Both hands <em>stand</em>. No third card. Player wins unless Banker also shows a 9 (tie).</div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="flow-3">
+    <div class="tab-panel-head">
+      <div>
+        <div class="tab-panel-title">Player acts first <span class="cn">· draw on 0–5, stand on 6–7</span></div>
+        <div class="tab-panel-desc">No natural? Then Player's rule is simple. With a two-card total of <strong>0–5</strong>, draw a third card. With <strong>6 or 7</strong>, stand. No choice — the tableau does the thinking.</div>
+      </div>
+      <button class="tab-replay" onclick="dealFlow('flow-3')">↻ Replay</button>
+    </div>
+    <div class="hand-layout">
+      <div class="hand-side">
+        <div class="hand-label player">punto · player</div>
+        <div class="hand-cards" id="flow3-player"></div>
+        <div class="hand-total player" id="flow3-player-total"><span class="lbl">Total</span>—</div>
+      </div>
+      <div class="hand-vs"><div class="hand-vs-dot">vs</div></div>
+      <div class="hand-side">
+        <div class="hand-label banker">banco · banker</div>
+        <div class="hand-cards" id="flow3-banker"></div>
+        <div class="hand-total banker" id="flow3-banker-total"><span class="lbl">Total</span>—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="flow-4">
+    <div class="tab-panel-head">
+      <div>
+        <div class="tab-panel-title">Banker's rule is <span class="cn">· more elaborate</span></div>
+        <div class="tab-panel-desc">Banker's draw depends on <em>both</em> Banker's total <em>and</em> Player's third card. This is the famous <strong>tableau</strong> — detailed in the next section — but the short version is below.</div>
+      </div>
+      <button class="tab-replay" onclick="dealFlow('flow-4')">↻ Replay</button>
+    </div>
+    <div class="hand-layout">
+      <div class="hand-side">
+        <div class="hand-label player">punto · player</div>
+        <div class="hand-cards" id="flow4-player"></div>
+        <div class="hand-total player" id="flow4-player-total"><span class="lbl">Total</span>—</div>
+      </div>
+      <div class="hand-vs"><div class="hand-vs-dot">vs</div></div>
+      <div class="hand-side">
+        <div class="hand-label banker">banco · banker</div>
+        <div class="hand-cards" id="flow4-banker"></div>
+        <div class="hand-total banker" id="flow4-banker-total"><span class="lbl">Total</span>—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="flow-5">
+    <div class="tab-panel-head">
+      <div>
+        <div class="tab-panel-title">Settle the bets <span class="cn">· closest to 9 wins</span></div>
+        <div class="tab-panel-desc">Both hands revealed. <strong>Highest total wins.</strong> Player pays 1:1. Banker pays 1:1 minus a 5% commission (so really 0.95:1). Tie pays 8:1. Losing side loses the full bet. A tie pushes Player and Banker bets — they're returned.</div>
+      </div>
+      <button class="tab-replay" onclick="dealFlow('flow-5')">↻ Replay</button>
+    </div>
+    <div class="hand-layout">
+      <div class="hand-side">
+        <div class="hand-label player">punto · player</div>
+        <div class="hand-cards" id="flow5-player"></div>
+        <div class="hand-total player" id="flow5-player-total"><span class="lbl">Total</span>—</div>
+      </div>
+      <div class="hand-vs"><div class="hand-vs-dot">vs</div></div>
+      <div class="hand-side">
+        <div class="hand-label banker">banco · banker</div>
+        <div class="hand-cards" id="flow5-banker"></div>
+        <div class="hand-total banker" id="flow5-banker-total"><span class="lbl">Winner</span>—</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SEC TABLEAU ═══ -->
+<section class="section" id="sec-tableau">
+  <div class="section-header">
+    <div class="section-kicker">Section 05 · The Drawing Rules</div>
+    <h1 class="section-title">When does <em>a third card come out?</em></h1>
+    <p class="section-lede"><strong>You don't need to memorize any of this.</strong> The dealer applies these rules automatically — this section just explains <span class="term" tabindex="0"><span class="term-label">why</span><span class="term-pop" role="tooltip"><strong class="term-pop-title">Why it's so asymmetric</strong>Because Banker acts <strong>after</strong> Player, the house gets to react to Player's third card. That tiny informational edge is the root reason Banker wins ~50.68% of resolved hands — and why the casino charges a 5% commission on Banker wins to bleed that advantage back.</span></span> the cards came out the way they did.</p>
+  </div>
+
+  <div class="tableau-grid">
+
+    <div class="tableau-col">
+      <h3 class="minor-title">Player's rule <span style="color: var(--text-muted); font-weight: 400; font-size: 14px;">— always goes first</span></h3>
+      <div class="tableau-wrap">
+        <div class="tableau-head">
+          <div>
+            <div class="tableau-head-title">Punto · Player Hand</div>
+            <div class="tableau-head-sub">Based only on first two cards</div>
+          </div>
+        </div>
+        <table class="tableau-table">
+          <thead>
+            <tr><th>Two-card total</th><th>Action</th><th>Reasoning</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong class="tableau-range">0 · 1 · 2 · 3 · 4 · 5</strong></td><td><span class="tab-badge draw">Draw a third</span></td><td>Low total — improve the hand.</td></tr>
+            <tr><td><strong class="tableau-range">6 · 7</strong></td><td><span class="tab-badge stand">Stand</span></td><td>Strong enough. Don't risk busting.</td></tr>
+            <tr><td><strong class="tableau-range">8 · 9</strong></td><td><span class="tab-badge natural">Natural — coup ends</span></td><td>Highest totals. No more cards.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tableau-col">
+      <h3 class="minor-title">Banker's rule <span style="color: var(--text-muted); font-weight: 400; font-size: 14px;">— reacts to Player's third card</span></h3>
+      <p class="tableau-col-prose">If Player stood (6 or 7), Banker follows the same rule as Player: draw on 0–5, stand on 6–7. If Player <em>drew</em>, use the table below.</p>
+      <div class="tableau-wrap">
+        <div class="tableau-head">
+          <div>
+            <div class="tableau-head-title">Banco · Banker Hand</div>
+            <div class="tableau-head-sub">When Player drew a third card</div>
+          </div>
+        </div>
+        <table class="tableau-table">
+          <thead>
+            <tr>
+              <th>Banker</th>
+              <th>Draw if Player's 3rd is…</th>
+              <th>Stand if…</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong class="tableau-range">0 · 1 · 2</strong></td><td><span class="tab-badge draw">Always draw</span></td><td>Never</td></tr>
+            <tr><td><strong class="tableau-range">3</strong></td><td><span class="tab-badge draw">1, 2, 3, 4, 5, 6, 7, 9, 10</span></td><td>Only 8</td></tr>
+            <tr><td><strong class="tableau-range">4</strong></td><td><span class="tab-badge draw">2, 3, 4, 5, 6, 7</span></td><td>0, 1, 8, 9</td></tr>
+            <tr><td><strong class="tableau-range">5</strong></td><td><span class="tab-badge draw">4, 5, 6, 7</span></td><td>0, 1, 2, 3, 8, 9</td></tr>
+            <tr><td><strong class="tableau-range">6</strong></td><td><span class="tab-badge draw">6, 7</span></td><td>0–5, 8, 9</td></tr>
+            <tr><td><strong class="tableau-range">7</strong></td><td><span class="tab-badge stand">Always stand</span></td><td>Always</td></tr>
+            <tr><td><strong class="tableau-range">8 · 9</strong></td><td colspan="2"><span class="tab-badge natural">Natural — hand ended before Player drew</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ SEC ROADS ═══ -->
+<section class="section" id="sec-roads">
+  <div class="section-header">
+    <div class="section-kicker">Section 09 · Reading the Roads</div>
+    <h1 class="section-title">The <em>roads</em> — baccarat's scoreboard.</h1>
+    <p class="section-lede">The grids on every baccarat table are called <em>roads</em> (路 <em>lù</em>). They record which hand has been winning. Each hand is independent, so roads <strong>don't predict anything</strong> — but in Macau they're a cultural staple.</p>
+  </div>
+
+  <div class="roads-stage" id="roadsStage">
+    <div class="roads-pills" role="tablist" aria-label="Road type">
+      <button class="road-pill active" data-road="big" role="tab" aria-selected="true">
+        <span class="road-pill-cn">大</span>
+        <span class="road-pill-label">Big Road</span>
+      </button>
+      <button class="road-pill" data-road="eye" role="tab" aria-selected="false">
+        <span class="road-pill-cn">眼</span>
+        <span class="road-pill-label">Big Eye Boy</span>
+      </button>
+      <button class="road-pill" data-road="small" role="tab" aria-selected="false">
+        <span class="road-pill-cn">小</span>
+        <span class="road-pill-label">Small Road</span>
+      </button>
+      <button class="road-pill" data-road="cockroach" role="tab" aria-selected="false">
+        <span class="road-pill-cn">蟑</span>
+        <span class="road-pill-label">Cockroach Pig</span>
+      </button>
+    </div>
+
+    <div class="roads-layout">
+      <div class="roads-visual">
+        <div class="roads-pane is-active" data-road="big"><div class="road-grid-inner" id="bigRoad"></div></div>
+        <div class="roads-pane" data-road="eye"><div class="road-grid-inner" id="bigEye"></div></div>
+        <div class="roads-pane" data-road="small"><div class="road-grid-inner" id="smallRoad"></div></div>
+        <div class="roads-pane" data-road="cockroach"><div class="road-grid-inner" id="cockroach"></div></div>
+      </div>
+
+      <div class="roads-info">
+        <div class="roads-info-pane is-active" data-road="big">
+          <div class="roads-info-eyebrow">大路 · The main scoreboard</div>
+          <h3 class="roads-info-name">Big Road</h3>
+          <p class="roads-info-body">A new column starts whenever the winner switches from Player to Banker. Long vertical columns are <em>streaks</em> — the famous "dragon." Frequent switches are <em>choppy</em>. This is the only road that records the actual results; everything else is derived from it.</p>
+          <div class="roads-info-meta">
+            <span><strong>Reads</strong> Actual outcomes</span>
+            <span><strong>Use</strong> Spot streaks vs. chops</span>
+          </div>
+        </div>
+        <div class="roads-info-pane" data-road="eye">
+          <div class="roads-info-eyebrow">大眼仔 · Pattern of the pattern</div>
+          <h3 class="roads-info-name">Big Eye Boy</h3>
+          <p class="roads-info-body">Derived from the Big Road. Tracks whether the columns are <em>regular</em> (similar lengths — red dot) or <em>irregular</em> (changing lengths — blue dot). Pure pattern analysis on top of pattern analysis.</p>
+          <div class="roads-info-meta">
+            <span><strong>Reads</strong> Column similarity</span>
+            <span><strong>Use</strong> Detect rhythm shifts</span>
+          </div>
+        </div>
+        <div class="roads-info-pane" data-road="small">
+          <div class="roads-info-eyebrow">小路 · Finer rhythm</div>
+          <h3 class="roads-info-name">Small Road</h3>
+          <p class="roads-info-body">Like Big Eye Boy but skips one more column back when comparing. Used alongside the others to triangulate perceived trends in the shoe.</p>
+          <div class="roads-info-meta">
+            <span><strong>Reads</strong> Two-column-back match</span>
+            <span><strong>Use</strong> Cross-check Big Eye</span>
+          </div>
+        </div>
+        <div class="roads-info-pane" data-road="cockroach">
+          <div class="roads-info-eyebrow">蟑螂路 · Three columns back</div>
+          <h3 class="roads-info-name">Cockroach Pig</h3>
+          <p class="roads-info-body">Named for the chaotic zigzag it produces. Skips <em>three</em> columns for its comparison. Almost nobody outside Macau understands it fully — and it's no more predictive than a coin toss.</p>
+          <div class="roads-info-meta">
+            <span><strong>Reads</strong> Three-column-back match</span>
+            <span><strong>Use</strong> Cultural ritual, not strategy</span>
+          </div>
+        </div>
+
+        <div class="roads-callout">
+          <strong>Roads don't predict anything.</strong> Each hand is independent. Watch them; don't bet on them.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SEC BETS / HOUSE EDGE ═══ -->
+<section class="section" id="sec-bets">
+  <div class="section-header">
+    <div class="section-kicker">Section 07 · Bets & House Edge</div>
+    <h1 class="section-title">Three bets. <em>One is a trap.</em></h1>
+    <p class="section-lede">Punto Banco offers three main wagers. Their house edges are very different — knowing which is which is the most useful thing on this page.</p>
+  </div>
+
+  <div class="odds-wrap">
+    <div class="odds-row">
+      <div class="odds-name">Banker <span class="pct">45.86% win</span></div>
+      <div class="odds-bar"><div class="odds-fill banker" style="width: 0;" data-width="45.86"></div></div>
+      <div class="odds-edge">1.06%</div>
+    </div>
+    <div class="odds-row">
+      <div class="odds-name">Player <span class="pct">44.62% win</span></div>
+      <div class="odds-bar"><div class="odds-fill player" style="width: 0;" data-width="44.62"></div></div>
+      <div class="odds-edge">1.24%</div>
+    </div>
+    <div class="odds-row">
+      <div class="odds-name">Tie <span class="pct">9.52% win</span></div>
+      <div class="odds-bar"><div class="odds-fill tie" style="width: 0;" data-width="9.52"></div></div>
+      <div class="odds-edge bad">14.36%</div>
+    </div>
+  </div>
+
+  <p class="prose"><strong>Banker</strong> wins slightly more than Player because Banker acts second and can react to Player's draw. The casino offsets this with a 5% commission on Banker wins, which leaves a house edge of just 1.06% — <em>one of the lowest in any casino game</em>.</p>
+
+  <p class="prose"><strong>Tie</strong> pays 8:1, which sounds huge, but the true odds are closer to 9.5:1. That gap is where the house hides a monstrous <span class="carmine">14.36%</span> edge — more than ten times the Banker bet. At some UK casinos tie pays 9:1, trimming the edge to ~4.85%, still far worse than Banker or Player.</p>
+
+  <h3 class="minor-title">Side bets — the sucker's garden</h3>
+
+  <p class="prose-small">Casinos have invented dozens of side bets: <em>Pair</em>, <em>Big/Small</em>, <em>Dragon Bonus</em>, <em>Perfect Pair</em>, <em>Egalité (specific tie totals)</em>. House edges range from 4% to over 30%. They make the game feel livelier. Ignore them.</p>
+
+  <div class="callout">
+    <div class="callout-title">The math, in one sentence</div>
+    <div class="callout-body">If you bet at all, bet <strong>Banker</strong> — and <em>never the tie</em>. (Exception: commission-free tables where Banker wins with 6 pay only 0.5:1 shift the edge. Check the posted rules first.)</div>
+  </div>
+</section>
+
+<!-- ═══ SEC STRATEGY ═══ -->
+<section class="section" id="sec-strategy">
+  <div class="section-header">
+    <div class="section-kicker">Section 08 · Betting Systems</div>
+    <h1 class="section-title">Systems are <em>for your head, not your odds.</em></h1>
+    <p class="section-lede"><strong>None of these will beat the casino.</strong> What they give you is a rule for <em>how much</em> to bet next. A betting system is a discipline tool, not a winning formula.</p>
+  </div>
+
+  <div class="strategy-flip-grid" id="stratFlipGrid">
+
+    <!-- Slot 1 — Beginner front · backs reveal Intermediate's Paroli or Advanced's Martingale -->
+    <article class="strat-flip strat-flip--green" data-tier="beginner">
+      <div class="strat-flip-inner">
+        <button type="button" class="strat-face strat-face--front strat-front--beginner" data-tier="beginner" aria-pressed="false">
+          <div class="strat-front-eyebrow">Difficulty</div>
+          <h3 class="strat-front-title">Beginner</h3>
+          <p class="strat-front-blurb">Lowest risk. Linear bankroll behaviour. The smartest place to start.</p>
+          <div class="strat-front-foot">
+            <span class="strat-front-count">2 systems</span>
+            <span class="strat-front-cta">Reveal &rsaquo;</span>
+          </div>
+        </button>
+
+        <div class="strat-face strat-face--back" data-show-when="intermediate" aria-hidden="true">
+          <div class="strat-back-tag intermediate">Intermediate · Positive Progression</div>
+          <div class="strat-back-name">Paroli</div>
+          <p class="strat-back-desc">The <em>reverse Martingale</em>. Double your bet after each <strong>win</strong>. Reset to base after three consecutive wins — or after any loss. Max loss per cycle: one unit. Max win per cycle: seven units.</p>
+          <div class="strat-sequence">
+            <div class="seq-num">$10</div><div class="seq-arrow">W&rarr;</div>
+            <div class="seq-num">$20</div><div class="seq-arrow">W&rarr;</div>
+            <div class="seq-num">$40</div><div class="seq-arrow">W&rarr;</div>
+            <div class="seq-num">$10</div>
+          </div>
+          <div class="strat-meta">
+            <span>Risk <span class="val">Moderate</span></span>
+            <span>Goal <span class="val">3 in a row</span></span>
+          </div>
+        </div>
+
+        <div class="strat-face strat-face--back" data-show-when="advanced" aria-hidden="true">
+          <div class="strat-back-tag advanced">Advanced · Negative Progression</div>
+          <div class="strat-back-name">Martingale</div>
+          <p class="strat-back-desc">Double your bet after every <strong>loss</strong> until you win; one win recovers the entire streak plus one unit. A six-loss streak at $25 base forces a $1,600 bet for a $25 profit — table limits eventually kill it.</p>
+          <div class="strat-sequence">
+            <div class="seq-num">$25</div><div class="seq-arrow">L&rarr;</div>
+            <div class="seq-num">$50</div><div class="seq-arrow">L&rarr;</div>
+            <div class="seq-num">$100</div><div class="seq-arrow">L&rarr;</div>
+            <div class="seq-num">$200</div>
+          </div>
+          <div class="strat-meta">
+            <span>Variance <span class="val">Lethal</span></span>
+            <span>Bankroll <span class="val">Huge</span></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Slot 2 — Intermediate front · backs reveal Beginner's Flat Betting or Advanced's Fibonacci -->
+    <article class="strat-flip strat-flip--gold" data-tier="intermediate">
+      <div class="strat-flip-inner">
+        <button type="button" class="strat-face strat-face--front strat-front--intermediate" data-tier="intermediate" aria-pressed="false">
+          <div class="strat-front-eyebrow">Difficulty</div>
+          <h3 class="strat-front-title">Intermediate</h3>
+          <p class="strat-front-blurb">Positive progression. Ride the streaks, fold on cold ones. Bankroll-friendly.</p>
+          <div class="strat-front-foot">
+            <span class="strat-front-count">2 systems</span>
+            <span class="strat-front-cta">Reveal &rsaquo;</span>
+          </div>
+        </button>
+
+        <div class="strat-face strat-face--back" data-show-when="beginner" aria-hidden="true">
+          <div class="strat-back-tag beginner">Beginner · Low Risk</div>
+          <div class="strat-back-name">Flat Betting</div>
+          <p class="strat-back-desc">Bet the same amount every hand. No progression, no chasing. The purest expression of accepting the house edge — losses are linear, wins are linear, and your bankroll lasts longest of any system.</p>
+          <div class="strat-sequence">
+            <div class="seq-num">$10</div><div class="seq-arrow">&rarr;</div>
+            <div class="seq-num">$10</div><div class="seq-arrow">&rarr;</div>
+            <div class="seq-num">$10</div><div class="seq-arrow">&rarr;</div>
+            <div class="seq-num">$10</div>
+          </div>
+          <div class="strat-meta">
+            <span>Variance <span class="val">Low</span></span>
+            <span>Bankroll <span class="val">Small</span></span>
+          </div>
+        </div>
+
+        <div class="strat-face strat-face--back" data-show-when="advanced" aria-hidden="true">
+          <div class="strat-back-tag advanced">Advanced · Negative Progression</div>
+          <div class="strat-back-name">Fibonacci</div>
+          <p class="strat-back-desc">Bet sizes follow the Fibonacci sequence (1, 1, 2, 3, 5, 8, 13, 21&hellip;). Move forward after a loss, back two after a win. Softer than Martingale — you don't double, you <em>accumulate</em> — but still vulnerable to long cold streaks.</p>
+          <div class="strat-sequence">
+            <div class="seq-num">1</div><div class="seq-arrow">L&rarr;</div>
+            <div class="seq-num">1</div><div class="seq-arrow">L&rarr;</div>
+            <div class="seq-num">2</div><div class="seq-arrow">L&rarr;</div>
+            <div class="seq-num">3</div><div class="seq-arrow">L&rarr;</div>
+            <div class="seq-num">5</div>
+          </div>
+          <div class="strat-meta">
+            <span>Risk <span class="val">High</span></span>
+            <span>Escalation <span class="val">Slower</span></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Slot 3 — Advanced front · backs reveal Beginner's One-Sided or Intermediate's 1-3-2-6 -->
+    <article class="strat-flip strat-flip--red" data-tier="advanced">
+      <div class="strat-flip-inner">
+        <button type="button" class="strat-face strat-face--front strat-front--advanced" data-tier="advanced" aria-pressed="false">
+          <div class="strat-front-eyebrow">Difficulty</div>
+          <h3 class="strat-front-title">Advanced</h3>
+          <p class="strat-front-blurb">Negative progression. High variance, deep bankroll required. Treat with respect.</p>
+          <div class="strat-front-foot">
+            <span class="strat-front-count">2 systems</span>
+            <span class="strat-front-cta">Reveal &rsaquo;</span>
+          </div>
+        </button>
+
+        <div class="strat-face strat-face--back" data-show-when="beginner" aria-hidden="true">
+          <div class="strat-back-tag beginner">Beginner · Low Risk</div>
+          <div class="strat-back-name">One-Sided</div>
+          <p class="strat-back-desc">Pick Banker. Stay on Banker every single hand. The statistically optimal "hands-off" strategy — you lock in the lowest possible house edge and remove all decision fatigue.</p>
+          <div class="strat-sequence">
+            <div class="seq-num">B</div><div class="seq-arrow">&rarr;</div>
+            <div class="seq-num">B</div><div class="seq-arrow">&rarr;</div>
+            <div class="seq-num">B</div><div class="seq-arrow">&rarr;</div>
+            <div class="seq-num">B</div>
+          </div>
+          <div class="strat-meta">
+            <span>House Edge <span class="val">1.06%</span></span>
+            <span>Discipline <span class="val">High</span></span>
+          </div>
+        </div>
+
+        <div class="strat-face strat-face--back" data-show-when="intermediate" aria-hidden="true">
+          <div class="strat-back-tag intermediate">Intermediate · Positive Progression</div>
+          <div class="strat-back-name">1-3-2-6 System</div>
+          <p class="strat-back-desc">A capped four-step progression used to capitalize on short winning streaks without giving it all back. After four wins in a row you've netted 12 units; any loss along the way resets you to 1.</p>
+          <div class="strat-sequence">
+            <div class="seq-num">1</div><div class="seq-arrow">W&rarr;</div>
+            <div class="seq-num">3</div><div class="seq-arrow">W&rarr;</div>
+            <div class="seq-num">2</div><div class="seq-arrow">W&rarr;</div>
+            <div class="seq-num">6</div>
+          </div>
+          <div class="strat-meta">
+            <span>Max Net <span class="val">+12 units</span></span>
+            <span>Max Loss <span class="val">-2 units</span></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="callout">
+    <div class="callout-title">The truth</div>
+    <div class="callout-body">No betting system changes the fact that the house extracts its edge over enough hands. The only real winning strategy is <strong>discipline</strong>: fixed bankroll, strict loss limit, pre-decided walk-away point for wins. The mathematics doesn't move.</div>
+  </div>
+</section>
+
+<!-- ═══ SEC SIMULATOR ═══ -->
+<section class="section" id="sec-sim">
+  <div class="section-header">
+    <div class="section-kicker">Section 12 · Live Simulator</div>
+    <h1 class="section-title">Sit down. <em>Play a shoe.</em></h1>
+    <p class="section-lede">Everything you've just read, in a live deck. Pick a chip size, choose Player, Banker, or Tie, and deal. The tableau runs automatically. Bankroll, streaks, and stats are tracked live.</p>
+  </div>
+
+  <div class="sim" data-variant="puntobanco">
+
+    <!-- Variant filter -->
+    <div class="sim-variant-picker" role="tablist" aria-label="Game variant">
+      <button class="sim-variant active" data-variant="puntobanco" role="tab" aria-selected="true">
+        <span class="sim-variant-cn">百家樂</span>
+        <span class="sim-variant-label">Punto Banco</span>
+      </button>
+      <button class="sim-variant" data-variant="mini" role="tab" aria-selected="false">
+        <span class="sim-variant-cn">迷你</span>
+        <span class="sim-variant-label">Mini Baccarat</span>
+      </button>
+      <button class="sim-variant" data-variant="dragontiger" role="tab" aria-selected="false">
+        <span class="sim-variant-cn">龍虎</span>
+        <span class="sim-variant-label">Dragon Tiger</span>
+      </button>
+    </div>
+
+    <div class="sim-head">
+      <div>
+        <div class="sim-title" id="simTitle">Punto Banco <span style="color:var(--gold-bright); font-style: italic;">· Live</span></div>
+        <div class="sim-sub" id="simSub">8-deck shoe · Banker wins pay 0.95:1 · Tie pays 8:1</div>
+      </div>
+      <div class="sim-bankroll">
+        <span class="sim-bankroll-label">Bankroll</span>
+        <div class="sim-bankroll-value" id="bankroll">$1,000</div>
+      </div>
+    </div>
+
+    <!-- Rules panel — content swapped by JS based on variant -->
+    <div class="sim-rules" id="simRules">
+      <div class="sim-rules-eyebrow">How it plays</div>
+      <p class="sim-rules-body" id="simRulesBody">Two cards are dealt to Player and Banker. Cards 2–9 count face value, 10s and courts count zero, Aces count 1. Hand totals drop the tens digit (so 7 + 8 = 15 → 5). A third card may be drawn for either side following a fixed tableau the dealer handles for you. Closest to 9 wins.</p>
+    </div>
+
+    <!-- Playfield wrapper: holds the aspect-ratio on desktop so bets +
+         controls can overlay the table via absolute positioning without
+         inflating the table image itself. On mobile the wrapper lets the
+         table render at its proper aspect and the bets/controls flow
+         below as normal blocks. -->
+    <div class="sim-playfield">
+
+      <!-- Realistic baccarat table — image background with card slots
+           overlaid on the painted card outlines. -->
+      <div class="sim-table sim-table--realistic">
+        <!-- Mark + hand labels overlay the painted ones in the image so the
+             variant switcher can rewrite them (Punto/Banco → Dragon/Tiger). -->
+        <div class="sim-table-mark">百家樂</div>
+        <div class="sim-hand-label sim-hand-label-player player" id="simPlayerLabel">Punto · Player</div>
+        <div class="sim-hand-label sim-hand-label-banker banker" id="simBankerLabel">Banco · Banker</div>
+
+        <!-- Card landing zones — sit exactly over the painted card outlines -->
+        <div class="sim-hand-zone sim-hand-zone-player">
+          <div class="sim-hand-cards" id="simPlayer"></div>
+        </div>
+        <div class="sim-hand-zone sim-hand-zone-banker">
+          <div class="sim-hand-cards" id="simBanker"></div>
+        </div>
+
+        <!-- Totals: direct children so absolute positioning is relative to the table image. -->
+        <div class="sim-hand-total player" id="simPlayerTotal"></div>
+        <div class="sim-hand-total banker" id="simBankerTotal"></div>
+      </div>
+
+      <!-- Wager options — Player / Tie / Banker. Overlay the felt on
+           desktop (absolute); flow below on mobile (static). -->
+      <div class="sim-bets">
+        <button class="bet-box player-bet" data-bet="player" type="button">
+          <span class="bet-label">Player · 1:1</span>
+          <span class="bet-payout">1.00×</span>
+          <span class="bet-edge">edge 1.24%</span>
+          <span class="bet-chip" id="chip-player">P</span>
+        </button>
+        <button class="bet-box tie-bet" data-bet="tie" type="button">
+          <span class="bet-label">Tie · 8:1</span>
+          <span class="bet-payout">8.00×</span>
+          <span class="bet-edge">edge 14.36%</span>
+          <span class="bet-chip" id="chip-tie">T</span>
+        </button>
+        <button class="bet-box banker-bet" data-bet="banker" type="button">
+          <span class="bet-label">Banker · 0.95:1</span>
+          <span class="bet-payout">0.95×</span>
+          <span class="bet-edge">edge 1.06%</span>
+          <span class="bet-chip" id="chip-banker">B</span>
+        </button>
+      </div>
+
+      <!-- Chips + action buttons -->
+      <div class="sim-controls">
+        <div class="sim-chip-row">
+          <button class="chip-btn" data-chip="5">$5</button>
+          <button class="chip-btn c25 active" data-chip="25">$25</button>
+          <button class="chip-btn c100" data-chip="100">$100</button>
+          <button class="chip-btn c500" data-chip="500">$500</button>
+        </div>
+        <button class="btn btn-primary" id="dealBtn" disabled>Deal Hand</button>
+        <button class="btn btn-ghost" id="autoBtn">Auto ×25</button>
+        <button class="btn" id="resetBtn">Reset</button>
+      </div>
+
+    </div>
+
+    <!-- Live Big Road — sits directly below the table so every settled
+         hand adds a cell right in the player's sightline. Fills left-to-
+         right; ties attach to the last cell as a small gold dot. -->
+    <div class="sim-roads">
+      <div class="sim-roads-head">
+        <div class="sim-roads-title">Your shoe <span>· Big Road</span></div>
+        <div class="sim-roads-legend">
+          <span><span class="sim-roads-dot p"></span><span id="simRoadsLegendP">Player</span></span>
+          <span><span class="sim-roads-dot b"></span><span id="simRoadsLegendB">Banker</span></span>
+          <span><span class="sim-roads-dot t"></span>Tie</span>
+        </div>
+      </div>
+      <div class="sim-big-road" id="simBigRoad" aria-label="Live Big Road of your session">
+        <div class="sim-big-road-empty">No hands yet. Deal a few and your road fills in left-to-right.</div>
+      </div>
+    </div>
+
+    <div class="sim-stats">
+      <div class="sim-stat"><div class="sim-stat-label">Hands</div><div class="sim-stat-value" id="statHands">0</div></div>
+      <div class="sim-stat"><div class="sim-stat-label">Player Wins</div><div class="sim-stat-value jade" id="statP">0</div></div>
+      <div class="sim-stat"><div class="sim-stat-label">Banker Wins</div><div class="sim-stat-value carmine" id="statB">0</div></div>
+      <div class="sim-stat"><div class="sim-stat-label">Ties</div><div class="sim-stat-value gold" id="statT">0</div></div>
+      <div class="sim-stat"><div class="sim-stat-label">Net</div><div class="sim-stat-value" id="statNet">$0</div></div>
+    </div>
+
+    <div class="sim-log" id="simLog">
+      <div class="sim-log-line"><span class="time">—</span><span>Place a bet and deal to begin the shoe.</span></div>
+    </div>
+
+    <button class="strat-demo-trigger" id="stratDemoTrigger" type="button">
+      <span class="strat-demo-trigger-icon">▶</span>
+      <span class="strat-demo-trigger-label">
+        <strong>Try a guided strategy demo</strong>
+        <span>Watch Flat, Martingale, or Paroli play out — with reasoning</span>
+      </span>
+    </button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ STRATEGY DEMO ═══════════════════════════ -->
+<div class="strat-demo" id="stratDemo" hidden aria-hidden="true">
+  <div class="strat-demo-card" id="stratDemoCard" role="dialog" aria-modal="true" aria-labelledby="stratDemoTitle">
+    <div class="strat-demo-head">
+      <div class="strat-demo-progress">
+        <span class="strat-demo-step" id="stratDemoStep">—</span>
+        <span class="strat-demo-strategy" id="stratDemoStrategy">Pick a strategy</span>
+      </div>
+      <button class="strat-demo-close" id="stratDemoClose" type="button" aria-label="Close demo">×</button>
+    </div>
+    <h3 class="strat-demo-title" id="stratDemoTitle">Pick a strategy to demo</h3>
+    <p class="strat-demo-body" id="stratDemoBody">I'll auto-bet for you and explain each outcome the first time it happens. Refresh to reset the explanations.</p>
+
+    <div class="strat-demo-picker" id="stratDemoPicker">
+      <button class="strat-demo-pick" data-strategy="flat" type="button">
+        <span class="strat-demo-pick-name">Flat · Banker</span>
+        <span class="strat-demo-pick-desc">Same $25 every hand. Closest to "playing the math."</span>
+      </button>
+      <button class="strat-demo-pick" data-strategy="martingale" type="button">
+        <span class="strat-demo-pick-name">Martingale</span>
+        <span class="strat-demo-pick-desc">Double after a loss. Brutal in a streak.</span>
+      </button>
+      <button class="strat-demo-pick" data-strategy="paroli" type="button">
+        <span class="strat-demo-pick-name">Paroli</span>
+        <span class="strat-demo-pick-desc">Double after a win. Reset on loss or 3-streak.</span>
+      </button>
+    </div>
+
+    <div class="strat-demo-controls" id="stratDemoControls" hidden>
+      <button class="strat-demo-skip" id="stratDemoSwitch" type="button">← Switch strategy</button>
+      <div class="strat-demo-nav">
+        <button class="strat-demo-pause" id="stratDemoPause" type="button">⏸ Pause</button>
+        <button class="strat-demo-next" id="stratDemoNext" type="button">Continue →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ SIM EXPLAINER ═══════════════════════════
+     Appears after the first 2 settled hands in the live simulator so a
+     new player sees why they won or lost. Dismisses with Continue. -->
+<div class="sim-explain" id="simExplain" hidden aria-hidden="true">
+  <div class="sim-explain-backdrop" id="simExplainBackdrop"></div>
+  <div class="sim-explain-card" role="dialog" aria-modal="true" aria-labelledby="simExplainTitle">
+    <div class="sim-explain-step" id="simExplainStep">Hand 1 · why</div>
+    <h3 class="sim-explain-title" id="simExplainTitle">—</h3>
+    <div class="sim-explain-recap" id="simExplainRecap">—</div>
+    <p class="sim-explain-why" id="simExplainWhy">—</p>
+    <div class="sim-explain-result" id="simExplainResult">—</div>
+    <div class="sim-explain-foot">
+      <span class="sim-explain-note" id="simExplainNote">One more quick explainer, then it plays at full speed.</span>
+      <button class="sim-explain-next" id="simExplainNext" type="button">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SEC FOCUS ═══ -->
+<section class="section" id="sec-etiquette">
+  <div class="section-header">
+    <div class="section-kicker">Section 10 · Focus</div>
+    <h1 class="section-title">Before you <em>sit down.</em></h1>
+    <p class="section-lede">Rules and odds tell you how the game works. These five habits decide how long your bankroll lasts and what you walk away with.</p>
+  </div>
+
+  <ul class="etiquette-list">
+    <li>
+      <span class="etiquette-tag">Math</span>
+      <span class="etiquette-line"><strong>Bet Banker by default.</strong> House edge is 1.06%, the lowest of any main bet in the casino. Player sits at 1.24%, close enough not to matter in practice. Tie carries a 14.36% edge. The 8:1 payout does not make up for how rarely it hits.</span>
+    </li>
+    <li>
+      <span class="etiquette-tag">Sizing</span>
+      <span class="etiquette-line"><strong>Keep your base bet at 2% of bankroll or less.</strong> A $500 session means $5 to $10 chips. Lower minimums are not worse. They give you runway to survive a cold stretch without rebuying.</span>
+    </li>
+    <li>
+      <span class="etiquette-tag">Avoid</span>
+      <span class="etiquette-line"><strong>Skip the side bets.</strong> Pair, Dragon Bonus, Perfect Pair, Egalité all carry house edges between 4% and 30%. That is up to thirty times the cost of a Banker bet. Stick to the three main wagers.</span>
+    </li>
+    <li>
+      <span class="etiquette-tag">Mindset</span>
+      <span class="etiquette-line"><strong>Roads don't predict anything.</strong> Every coup is independent. The shoe has no memory. A streak on the big road is fine to watch. It is not a signal to bet.</span>
+    </li>
+    <li>
+      <span class="etiquette-tag etiquette-tag-gold">The rule</span>
+      <span class="etiquette-line"><strong>Set a loss limit and a win target before you sit.</strong> When you hit either, you leave. Walking away up 30% while your gut says "one more shoe" is the hardest habit in baccarat, and the one that keeps your winnings.</span>
+    </li>
+  </ul>
+
+  <div style="text-align:center; padding: 32px 0 0;">
+    <div style="font-family: var(--font-display); font-style: italic; font-size: 28px; color: var(--gold-bright); margin-bottom: 8px;">Bonne chance.</div>
+    <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.2em; text-transform: uppercase;">— La maison salue ses joueurs</div>
+  </div>
+</section>
+
+<div class="footer-section">
+  <div class="footer-mark">百家樂</div>
+  <div class="footer-text">
+    An interactive field guide · Educational material only · Gambling involves real financial risk. The house edge exists even when you understand it perfectly. If you or someone you know has a gambling problem, reach out to local support services.
+  </div>
+  <div class="footer-credit">Built by Biff Buster</div>
+</div>
+
+</main>
+</div>
+
+<!-- Floating help button — opens the multi-step intro tour -->
+<button class="help-fab" id="helpFab" type="button" aria-label="Show intro tour" title="Intro tour">
+  <span class="help-fab-icon">?</span>
+  <span class="help-fab-pulse" aria-hidden="true"></span>
+</button>
+
+<!-- Floating RSVP-style toast -->
+<div class="rsvp-toast" id="rsvpToast" data-target="sec-sim">
+  <div class="rsvp-toast-icon">B</div>
+  <div class="rsvp-toast-content">
+    <strong>Ready to play?</strong>
+    Jump to the live simulator.
+  </div>
+  <button class="rsvp-toast-close" id="rsvpToastClose" type="button" aria-label="Dismiss">×</button>
+</div>
+
+<!-- Three.js r147 — supports EXT_texture_webp (r140+), last release with global-script GLTFLoader at examples/js
+     SRI (Subresource Integrity) locks the file contents; if the CDN ever serves anything
+     other than these exact bytes, the browser refuses to execute. -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"
+        integrity="sha384-vV17nr/rMaJqmeZkFUzXLpHdQ+ME5QHKdydaqqN+3Ga39RJlNrTatJxHwGV4ml2C"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/loaders/GLTFLoader.js"
+        integrity="sha384-FassWWYNEPQsuRQm+59KIMcDetEc30bNyE9yfx16Ok8lvoowyH81LtrPmLWltJMh"
+        crossorigin="anonymous"></script>
+
+<!-- GSAP + ScrollTrigger for the section-02 scroll-spotlight -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+        integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+        integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d"
+        crossorigin="anonymous"></script>
+
+<!-- Interaction modules (order matters: interactions.js defines shared helpers) -->
+<script src="src/js/interactions.js"></script>
+<script src="src/js/hero-scene.js"></script>
+<script src="src/js/stage-scene.js"></script>
+<script src="src/js/odds-roads.js"></script>
+<script src="src/js/simulator.js"></script>
+<script src="src/js/strategy-demo.js"></script>
+</body>
+</html>

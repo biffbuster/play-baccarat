@@ -1,0 +1,29 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Env / secrets (defence in depth — no secrets live in this repo, but keep it that way)
+.env
+.env.*
+
+# Logs
+*.log
+npm-debug.log*
+
+# Node (in case you ever add tooling)
+node_modules/
+
+# Claude Code local project state
+.claude/
+
+# Large source files that aren't loaded at runtime — uncomment if you want them tracked:
+# (these bloat clone size; nothing references them from HTML/JS)
+baccarat_table_virtual_casino_asset_pack.glb
+media/hero-chips.original.mp4
