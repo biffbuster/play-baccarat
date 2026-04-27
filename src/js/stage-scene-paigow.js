@@ -137,8 +137,9 @@
     scheduleRender();
   });
 
-  /* Two seats — Player (left) and Dealer (right). No three-circle bet
-     layout because Pai Gow Poker has a single wager per hand. */
+  /* Two seats facing each other across the table — Player at +z (south,
+     near camera), Dealer at -z (north, far side). One wager-spot ring on
+     the player side; Pai Gow has a single bet per hand. */
   function makeCircle(x, z, radius, color) {
     const ring = new THREE.Mesh(
       new THREE.RingGeometry(radius - 0.05, radius, 32),
@@ -149,7 +150,7 @@
     tableGroup.add(ring);
     return ring;
   }
-  makeCircle(-2.8, 3.0, 0.7, 0x4a9d7f);  /* player wager spot */
+  makeCircle(-2.2, 3.4, 0.6, 0x4a9d7f);  /* player wager spot (matches chip) */
 
   function makeLabel(text, color) {
     const c = document.createElement('canvas');
@@ -169,12 +170,17 @@
     plane.rotation.x = -Math.PI / 2;
     return plane;
   }
+  /* Player label sits at the south edge in front of their HIGH row,
+     reading upright to the camera. */
   const labP = makeLabel('PLAYER', '#6dd0a8');
-  labP.position.set(-2.8, 0.009, 3.0);
+  labP.position.set(0, 0.009, 4.0);
   tableGroup.add(labP);
 
+  /* Dealer label sits at the north edge — rotated 180° on the felt so it
+     reads upright from the dealer's POV (looking back across the table). */
   const labD = makeLabel('DEALER', '#e04349');
-  labD.position.set(2.8, 0.009, 3.0);
+  labD.position.set(0, 0.009, -4.0);
+  labD.rotation.z = Math.PI;
   tableGroup.add(labD);
 
   /* === Cards in 3D — same SVG-to-canvas-texture pipeline === */
@@ -235,16 +241,20 @@
     return mesh;
   }
 
-  /* Layout:
-     Each seat (player at x = -2.8, dealer at x = +2.8) gets 7 cards.
-     The five-card "high" hand sits in a back row at z = 1.8; the two
-     "low" cards sit forward at z = 2.7 (closer to the player). The
-     split layout reads at a glance — five behind, two in front.
-  */
-  const PLAYER_X = -2.8, DEALER_X = 2.8;
-  const HIGH_Z = 1.8, LOW_Z = 2.85;
-  const HIGH_GAP = 0.62; /* horizontal spacing between high-row cards */
-  const LOW_GAP  = 0.7;
+  /* Layout — player and dealer sit ACROSS the table from each other (real
+     game). Camera looks from +z toward -z, so:
+       Player side  — south, +z (closer to camera)
+       Dealer side  — north, -z (across the table from player)
+     Within each side, the 5-card HIGH hand sits at the back (further from
+     the middle pot) and the 2-card LOW hand sits in front, closer to the
+     centre — the standard Pai Gow display order. Both hands centre on
+     x = 0 and span ±1.4 horizontally. */
+  const PLAYER_HIGH_Z = 2.7;   /* player's high — closest to camera */
+  const PLAYER_LOW_Z  = 1.6;   /* player's low — toward the middle */
+  const DEALER_HIGH_Z = -2.7;  /* dealer's high — far end of table */
+  const DEALER_LOW_Z  = -1.6;  /* dealer's low — toward the middle */
+  const HIGH_GAP = 0.7;        /* horizontal spacing between high-row cards */
+  const LOW_GAP  = 0.78;
 
   /* Player's hand: A♠ K♥ Q♣ 9♦ 9♠ 4♥ 2♣ — split high = A 9 9 4 2, low = K Q */
   const playerScript = [
@@ -267,30 +277,36 @@
     { rank: '2', suit: '♥', row: 'low',  i: 1, total: 2 },
   ];
 
-  function endPosFor(seatX, row, i, total) {
-    const z = (row === 'high') ? HIGH_Z : LOW_Z;
+  function endPosFor(side, row, i, total) {
     const gap = (row === 'high') ? HIGH_GAP : LOW_GAP;
-    const x = seatX + (i - (total - 1) / 2) * gap;
+    const x = (i - (total - 1) / 2) * gap;
+    let z;
+    if (side === 'player') z = (row === 'high') ? PLAYER_HIGH_Z : PLAYER_LOW_Z;
+    else                   z = (row === 'high') ? DEALER_HIGH_Z : DEALER_LOW_Z;
     return new THREE.Vector3(x, 0.04, z);
   }
 
-  function makeStageCards(script, seatX, side) {
+  function makeStageCards(script, side) {
+    /* Dealer's cards face away from the player (toward the dealer) — give
+       them a 180° yaw so they look upright from the dealer's POV.
+       Player's cards stay at yaw 0 so they look upright from the camera. */
+    const yaw = (side === 'dealer') ? Math.PI : 0;
     return script.map((s) => {
       const card = buildStageCard(s.rank, s.suit);
       card.position.set(0, 8, -6);
       card.rotation.set(-Math.PI, 0, 0);
       card.visible = false;
       card.userData.startPos = new THREE.Vector3(0, 8, -6);
-      card.userData.endPos   = endPosFor(seatX, s.row, s.i, s.total);
+      card.userData.endPos   = endPosFor(side, s.row, s.i, s.total);
       card.userData.side     = side;
       card.userData.row      = s.row;
-      card.userData.endYaw   = 0;
+      card.userData.endYaw   = yaw;
       scene.add(card);
       return card;
     });
   }
-  const playerCards = makeStageCards(playerScript, PLAYER_X, 'player');
-  const dealerCards = makeStageCards(dealerScript, DEALER_X, 'dealer');
+  const playerCards = makeStageCards(playerScript, 'player');
+  const dealerCards = makeStageCards(dealerScript, 'dealer');
 
   /* Chip stack on the player's wager spot. */
   function makeChip(bodyColor, stripeColor, height) {
@@ -310,18 +326,22 @@
     return g;
   }
   const stageChip = makeChip(0xc1272d, 0xf5f0e0, 5);
-  stageChip.position.set(-2.8, 0.01, 3.0);
+  /* Player's wager spot — in front of the player's low hand, slightly off
+     to one side so it doesn't crowd the cards. */
+  stageChip.position.set(-2.2, 0.01, 3.4);
   stageChip.visible = false;
   scene.add(stageChip);
 
-  /* Camera path keyframes (6 steps) */
+  /* Camera path keyframes (6 steps) — original tuning. Card positions
+     changed (player ↔ dealer across the table) but the camera arc stays
+     the same as designed. */
   const camKeys = [
-    /* 0 — far wide, full table */                  { pos: [0, 13, 18], look: [0, 0, 0] },
-    /* 1 — mid hover, both seats in frame */        { pos: [0, 11, 14], look: [0, 0, 1] },
-    /* 2 — focus player set */                      { pos: [-5, 8, 11], look: [-2.6, 0, 2.2] },
-    /* 3 — focus dealer reveal */                   { pos: [ 5, 8, 11], look: [ 2.6, 0, 2.2] },
-    /* 4 — top-down split — see 5+2 layout */       { pos: [0, 14, 5],  look: [0, 0, 2.0] },
-    /* 5 — wide showdown / settle */                { pos: [0, 12, 17], look: [0, 0, 1] },
+    /* 0 — far wide */                  { pos: [0, 13, 18], look: [0, 0, 0] },
+    /* 1 — mid hover */                 { pos: [0, 11, 14], look: [0, 0, 1] },
+    /* 2 — focus player set */          { pos: [-5, 8, 11], look: [-2.6, 0, 2.2] },
+    /* 3 — focus dealer reveal */       { pos: [ 5, 8, 11], look: [ 2.6, 0, 2.2] },
+    /* 4 — top-down split */            { pos: [0, 14, 5],  look: [0, 0, 2.0] },
+    /* 5 — wide showdown / settle */    { pos: [0, 12, 17], look: [0, 0, 1] },
   ];
 
   /*
