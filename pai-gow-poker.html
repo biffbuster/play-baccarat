@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Play Pai Gow Poker · An interactive guide and live simulator</title>
+<meta name="description" content="An interactive guide to Pai Gow Poker — rules, hand rankings, the house way, betting math, and a live demo where you split your seven cards and play against the house." />
+
+<!-- Canonical -->
+<link rel="canonical" href="https://play-baccarat.vercel.app/pai-gow-poker" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Play Baccarat" />
+<meta property="og:url" content="https://play-baccarat.vercel.app/pai-gow-poker" />
+<meta property="og:title" content="Play Pai Gow Poker · An interactive guide and live simulator" />
+<meta property="og:description" content="Hand rankings, the house way, and a live Pai Gow Poker demo where you split your seven cards." />
+<meta property="og:image" content="https://play-baccarat.vercel.app/media/preview.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="Pai Gow Poker — split a seven-card hand into a five-card high and a two-card low." />
+
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Play Pai Gow Poker · An interactive guide and live simulator" />
+<meta name="twitter:description" content="Hand rankings, the house way, and a live Pai Gow Poker demo where you split your seven cards." />
+<meta name="twitter:image" content="https://play-baccarat.vercel.app/media/preview.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="src/css/baccarat.css">
+</head>
+<body>
+
+<div class="app">
+
+<!-- ═══════════════════════════ TOP NAV ═══════════════════════════ -->
+<header class="topbar" id="topbar">
+  <div class="topbar-inner">
+    <a class="brand" data-target="hero">
+      <div class="brand-mark">P</div>
+      <div class="brand-text">
+        <span class="brand-title">Pai Gow Poker</span>
+        <span class="brand-sub">牌九</span>
+      </div>
+    </a>
+
+    <button class="topbar-burger" id="topbarBurger" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="topnav" id="topnav">
+      <div class="topnav-item">
+        <button class="topnav-trigger topnav-trigger-game" data-menu="game-mode" aria-expanded="false">
+          <span class="game-mode-eyebrow">Game</span>
+          <span>Pai Gow Poker</span>
+          <span class="topnav-caret">▾</span>
+        </button>
+        <div class="topnav-dropdown" data-menu-panel="game-mode">
+          <div class="topnav-dropdown-label">Switch the game</div>
+          <div class="game-mode-list">
+            <a class="game-mode-item" href="/">
+              <div class="game-mode-name">Baccarat</div>
+              <div class="game-mode-sub">百家樂</div>
+            </a>
+            <a class="game-mode-item active" href="/pai-gow-poker">
+              <div class="game-mode-name">Pai Gow Poker</div>
+              <div class="game-mode-sub">牌九</div>
+            </a>
+            <span class="game-mode-item is-soon" aria-disabled="true">
+              <div class="game-mode-name">Ultimate Texas Hold'em</div>
+              <div class="game-mode-sub">德州撲克</div>
+              <span class="game-mode-soon">Coming soon</span>
+            </span>
+            <span class="game-mode-item is-soon" aria-disabled="true">
+              <div class="game-mode-name">Casino War</div>
+              <div class="game-mode-sub">戰爭</div>
+              <span class="game-mode-soon">Coming soon</span>
+            </span>
+            <span class="game-mode-item is-soon" aria-disabled="true">
+              <div class="game-mode-name">3-Card Poker</div>
+              <div class="game-mode-sub">三張撲克</div>
+              <span class="game-mode-soon">Coming soon</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="topnav-item">
+        <button class="topnav-trigger" data-menu="start">Start <span class="topnav-caret">▾</span></button>
+        <div class="topnav-dropdown" data-menu-panel="start">
+          <div class="topnav-dropdown-label">New to Pai Gow Poker? Begin here.</div>
+          <a class="nav-item" data-target="sec-welcome"><span class="nav-num">01</span>Welcome</a>
+          <a class="nav-item" data-target="sec-cards"><span class="nav-num">02</span>The Cards &amp; Joker</a>
+          <a class="nav-item" data-target="sec-table"><span class="nav-num">03</span>The Table</a>
+        </div>
+      </div>
+
+      <div class="topnav-item">
+        <button class="topnav-trigger" data-menu="game">The Game <span class="topnav-caret">▾</span></button>
+        <div class="topnav-dropdown" data-menu-panel="game">
+          <div class="topnav-dropdown-label">How a hand actually plays out.</div>
+          <a class="nav-item" data-target="sec-flow"><span class="nav-num">04</span>One Full Hand</a>
+          <a class="nav-item" data-target="sec-houseway"><span class="nav-num">05</span>The House Way</a>
+          <a class="nav-item" data-target="sec-rankings"><span class="nav-num">06</span>Hand Rankings</a>
+        </div>
+      </div>
+
+      <div class="topnav-item">
+        <button class="topnav-trigger" data-menu="strategy">Strategy <span class="topnav-caret">▾</span></button>
+        <div class="topnav-dropdown" data-menu-panel="strategy">
+          <div class="topnav-dropdown-label">For when you're ready to bet smart.</div>
+          <a class="nav-item" data-target="sec-bets"><span class="nav-num">07</span>Bets &amp; House Edge</a>
+          <a class="nav-item" data-target="sec-strategy"><span class="nav-num">08</span>Splitting Strategy</a>
+          <a class="nav-item" data-target="sec-etiquette"><span class="nav-num">09</span>Focus</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="topnav-actions">
+      <div class="topnav-item topnav-item-settings">
+        <button class="topnav-trigger" data-menu="settings" aria-label="Settings"><span class="topnav-gear">⚙</span></button>
+        <div class="topnav-dropdown topnav-dropdown-right" data-menu-panel="settings">
+          <div class="topnav-dropdown-label">Theme</div>
+          <div class="theme-picker">
+            <div class="theme-option active" data-theme="lacquer">Lacquer</div>
+            <div class="theme-option" data-theme="lightgold">Light Gold</div>
+            <div class="theme-option" data-theme="ivory">Ivory</div>
+          </div>
+        </div>
+      </div>
+
+      <a class="topnav-cta nav-item" data-target="sec-sim">Play ▸</a>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════ INTRO TOUR ═══════════════════════════ -->
+<div class="tour" id="tour" hidden aria-hidden="true">
+  <div class="tour-backdrop" id="tourBackdrop"></div>
+  <div class="tour-card" id="tourCard" role="dialog" aria-modal="true" aria-labelledby="tourTitle">
+    <div class="tour-progress">
+      <span class="tour-step-current" id="tourStepNum">1</span>
+      <span class="tour-step-sep">/</span>
+      <span class="tour-step-total" id="tourStepTotal">5</span>
+      <span class="tour-progress-label">Quick tour</span>
+    </div>
+    <h3 class="tour-title" id="tourTitle">Welcome — quick tour?</h3>
+    <p class="tour-body" id="tourBody">I'll point out the four sections that matter most. About 30 seconds. Hit Next to begin.</p>
+    <div class="tour-dots" id="tourDots"></div>
+    <div class="tour-controls">
+      <button class="tour-skip" id="tourSkip" type="button">Skip</button>
+      <div class="tour-nav-buttons">
+        <button class="tour-back" id="tourBack" type="button" hidden>← Back</button>
+        <button class="tour-next" id="tourNext" type="button">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ MAIN ═══════════════════════════ -->
+<main class="main">
+
+<!-- HERO -->
+<section class="hero hero--paigow" id="hero">
+  <div class="hero-bg-image" aria-hidden="true"></div>
+  <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="">
+    <source src="media/hero-chips.mp4" type="video/mp4">
+  </video>
+  <div class="hero-ambience" aria-hidden="true">
+    <div class="hero-warm-wash"></div>
+    <div class="hero-smoke hero-smoke-1"></div>
+    <div class="hero-smoke hero-smoke-2"></div>
+    <div class="hero-smoke hero-smoke-3"></div>
+  </div>
+  <div class="hero-vignette"></div>
+  <div class="hero-content">
+    <div class="hero-kicker">A Beginner's Field Guide on</div>
+    <h1 class="hero-title hero-title-mark" id="heroTitle">Pai Gow Poker</h1>
+    <p class="hero-sub">split seven cards · beat the house twice</p>
+    <div class="hero-rule" aria-hidden="true">
+      <span class="hero-rule-line"></span>
+      <span class="hero-rule-mark">&#10070;</span>
+      <span class="hero-rule-line"></span>
+    </div>
+    <p class="hero-lede">An introduction to the rules, the house way, and the math. You're dealt seven cards, you split them into a five-card high hand and a two-card low hand, and you have to beat the dealer on both to win.</p>
+  </div>
+  <div class="hero-scroll">
+    Scroll to deal
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══ SEC WELCOME ═══ -->
+<section class="section" id="sec-welcome">
+  <div class="section-header">
+    <div class="section-kicker">Section 01 · Start Here</div>
+    <h1 class="section-title">Pai Gow Poker in <em>three minutes.</em></h1>
+    <p class="section-lede">Pai Gow Poker is a slow, social game built on standard poker hand rankings. You're dealt seven cards. Your only job is to <strong>split them well</strong> — the rest is comparison against the dealer.</p>
+  </div>
+
+  <div class="welcome-grid welcome-grid--paigow">
+
+    <div class="welcome-panel">
+      <div class="welcome-step">01</div>
+      <h2 class="welcome-title">What is the game?</h2>
+      <p class="welcome-body">A 53-card deck (52 + one Joker) is dealt: <strong>seven cards to you</strong>, seven to the dealer. You split your seven cards into two hands — a <strong>five-card high hand</strong> and a <strong>two-card low hand</strong>. The five-card hand <em>must outrank</em> the two-card hand.</p>
+      <div class="welcome-split" data-state="united" aria-hidden="true">
+        <div class="welcome-split-stage">
+          <!-- 7 cards. Each card carries its position in BOTH the unsplit row
+               and the post-split layout via CSS custom properties. The
+               container's data-state attribute toggles which set of vars
+               gets applied via transform. -->
+          <div class="welcome-split-card" style="--xR:0px; --yR:0; --xS:0px; --yS:0; --rotS:-2deg;">
+            <img src="poker/AS.svg" alt="">
+          </div>
+          <div class="welcome-split-card welcome-split-card--low" style="--xR:42px; --yR:0; --xS:142px; --yS:118px; --rotS:-4deg;">
+            <img src="poker/KH.svg" alt="">
+          </div>
+          <div class="welcome-split-card welcome-split-card--low" style="--xR:84px; --yR:0; --xS:188px; --yS:118px; --rotS:4deg;">
+            <img src="poker/QC.svg" alt="">
+          </div>
+          <div class="welcome-split-card" style="--xR:126px; --yR:0; --xS:60px; --yS:0; --rotS:-1deg;">
+            <img src="poker/9D.svg" alt="">
+          </div>
+          <div class="welcome-split-card" style="--xR:168px; --yR:0; --xS:120px; --yS:0; --rotS:0deg;">
+            <img src="poker/9S.svg" alt="">
+          </div>
+          <div class="welcome-split-card" style="--xR:210px; --yR:0; --xS:180px; --yS:0; --rotS:1deg;">
+            <img src="poker/4H.svg" alt="">
+          </div>
+          <div class="welcome-split-card" style="--xR:252px; --yR:0; --xS:240px; --yS:0; --rotS:2deg;">
+            <img src="poker/2C.svg" alt="">
+          </div>
+
+          <!-- Group brackets that fade in only when split. They sit behind
+               the cards and frame the high vs low groupings. -->
+          <span class="welcome-split-bracket welcome-split-bracket--high">
+            <span class="welcome-split-bracket-label">5 · high hand</span>
+          </span>
+          <span class="welcome-split-bracket welcome-split-bracket--low">
+            <span class="welcome-split-bracket-label">2 · low hand</span>
+          </span>
+
+          <!-- Caption swaps based on state -->
+          <div class="welcome-split-caption">
+            <span class="welcome-split-caption-line welcome-split-caption-line--united">Seven cards, dealt face-up</span>
+            <span class="welcome-split-caption-line welcome-split-caption-line--split">You split them <em>five</em> and <em>two</em></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="welcome-panel">
+      <div class="welcome-step">02</div>
+      <h2 class="welcome-title">What do the cards count?</h2>
+      <p class="welcome-body">Standard poker. The five-card hand is ranked the same way as in any poker game — pairs, straights, flushes, full houses. The two-card hand can only be a pair or two high cards.</p>
+      <div class="welcome-cardrow">
+        <div class="welcome-cardgroup">
+          <img class="welcome-card-svg" src="poker/AS.svg" alt="Ace of Spades">
+          <div class="welcome-card-val">= <strong>A high</strong></div>
+        </div>
+        <div class="welcome-cardgroup">
+          <img class="welcome-card-svg" src="poker/KH.svg" alt="King of Hearts">
+          <div class="welcome-card-val">= <strong>K high</strong></div>
+        </div>
+        <div class="welcome-cardgroup">
+          <img class="welcome-card-svg" src="poker/1J.png" alt="Joker">
+          <div class="welcome-card-val">= <strong>wild·ish</strong></div>
+        </div>
+      </div>
+      <p class="welcome-fineprint">Joker = an Ace, or completes a straight, flush, straight flush, or royal flush. Otherwise it's just an Ace.</p>
+      <div class="welcome-example">
+        <span><strong>Best 5 + best remaining 2</strong></span>
+        <span class="welcome-arrow">→</span>
+        <span class="welcome-example-result">but the <strong>5-card hand must outrank the 2-card hand</strong></span>
+      </div>
+    </div>
+
+    <div class="welcome-panel">
+      <div class="welcome-step">03</div>
+      <h2 class="welcome-title">What happens at the table?</h2>
+      <ol class="welcome-steps">
+        <li><strong>Place your bet.</strong> One wager, before the deal.</li>
+        <li>You and the dealer each get <strong>seven cards</strong>, face down.</li>
+        <li><strong>Set your hand:</strong> pick two cards as your low hand. The other five are your high hand.</li>
+        <li>Dealer reveals and splits using a fixed <em>house way</em>. Both your hands are compared to the dealer's. Win both → win. Win one → push. Lose both → lose.</li>
+      </ol>
+      <a class="welcome-cta nav-item" data-target="sec-sim">Try a hand in the simulator ▸</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SEC CARDS — the 53rd card and the Joker ═══ -->
+<section class="section" id="sec-cards">
+  <div class="section-header">
+    <div class="section-kicker">Section 02 · The Cards</div>
+    <h1 class="section-title">A standard deck — <em>plus one Joker.</em></h1>
+    <p class="section-lede">Pai Gow Poker uses the familiar 52-card deck and adds a Joker — 53 cards in total. Three of the cards in this deck behave a little differently than you'd expect. Hover any of the face-up cards for the rules.</p>
+  </div>
+
+  <!-- Long deck-spread: stacked card backs that fan out on scroll. Three
+       of the cards (Joker, Queen, Ace) are flipped face-up; each shows a
+       hover popup explaining its role. Card back uses the 牌九 wordmark
+       in place of the baccarat ♠ via the .pg-deck modifier. -->
+  <div class="deck-spread pg-deck" id="pgDeckSpread" data-cards="13" aria-hidden="false">
+    <div class="deck-spread-track">
+      <div class="deck-spread-card deck-spread-back" data-i="0"><span class="pg-back-mark"><span>牌</span><span>九</span></span></div>
+      <div class="deck-spread-card deck-spread-back" data-i="1"><span class="pg-back-mark"><span>牌</span><span>九</span></span></div>
+      <div class="deck-spread-card deck-spread-back" data-i="2"><span class="pg-back-mark"><span>牌</span><span>九</span></span></div>
+
+      <div class="deck-spread-card deck-spread-card--face" data-i="3" tabindex="0">
+        <img src="poker/1J.png" alt="Joker">
+        <div class="deck-tip">
+          <div class="deck-tip-eyebrow">The 53rd card</div>
+          <div class="deck-tip-title">Joker · semi-wild</div>
+          <div class="deck-tip-body">Plays as an <strong>Ace</strong> by default. The only ranks it can substitute for are the ones needed to complete a <strong>straight</strong>, a <strong>flush</strong>, or a <strong>straight flush</strong>.</div>
+        </div>
+      </div>
+
+      <div class="deck-spread-card deck-spread-back" data-i="4"><span class="pg-back-mark"><span>牌</span><span>九</span></span></div>
+      <div class="deck-spread-card deck-spread-back" data-i="5"><span class="pg-back-mark"><span>牌</span><span>九</span></span></div>
+
+      <div class="deck-spread-card deck-spread-card--face" data-i="6" tabindex="0">
+        <img src="poker/QS.svg" alt="Queen of Spades">
+        <div class="deck-tip">
+          <div class="deck-tip-eyebrow">Standard face card</div>
+          <div class="deck-tip-title">Queen · rank 12</div>
+          <div class="deck-tip-body">No special rules — counts as a Queen in every comparison. Pairs of Queens or higher are the threshold for the <em>house way's</em> two-pair split decision.</div>
+        </div>
+      </div>
+
+      <div class="deck-spread-card deck-spread-back" data-i="7"><span class="pg-back-mark"><span>牌</span><span>九</span></span></div>
+      <div class="deck-spread-card deck-spread-back" data-i="8"><span class="pg-back-mark"><span>牌</span><span>九</span></span></div>
+
+      <div class="deck-spread-card deck-spread-card--face" data-i="9" tabindex="0">
+        <img src="poker/AS.svg" alt="Ace of Spades">
+        <div class="deck-tip">
+          <div class="deck-tip-eyebrow">Highest single card</div>
+          <div class="deck-tip-title">Ace · rank 14 (or 1)</div>
+          <div class="deck-tip-body">Plays high in straights (A-K-Q-J-10) and low in the wheel (A-2-3-4-5 — the second-strongest straight). Combined with the Joker and the other three Aces, makes <strong>Five Aces</strong>: Pai Gow's invented top hand.</div>
+        </div>
+      </div>
+
+      <div class="deck-spread-card deck-spread-back" data-i="10"><span class="pg-back-mark"><span>牌</span><span>九</span></span></div>
+      <div class="deck-spread-card deck-spread-back" data-i="11"><span class="pg-back-mark"><span>牌</span><span>九</span></span></div>
+      <div class="deck-spread-card deck-spread-back" data-i="12"><span class="pg-back-mark"><span>牌</span><span>九</span></span></div>
+    </div>
+    <div class="deck-spread-caption">
+      <span class="deck-spread-caption-line"></span>
+      <span class="deck-spread-caption-text">53 cards · 52 + Joker · hover the face-up cards</span>
+      <span class="deck-spread-caption-line"></span>
+    </div>
+  </div>
+
+  <div class="callout gold">
+    <div class="callout-title">A quirk worth memorizing</div>
+    <div class="callout-body">In most casinos, the second-highest straight is <strong>A-2-3-4-5</strong> — beaten only by A-K-Q-J-10. So an Ace-low "wheel" outranks a King-high straight. Worth knowing when you're choosing how to set a hand.</div>
+  </div>
+</section>
+
+<!-- ═══ SEC TABLE : 3D scroll stage ═══ -->
+<section class="section" id="sec-table" style="max-width: none; padding: 32px 0 0;">
+  <div style="max-width: var(--content-max); margin: 0 auto; padding: 0 48px;">
+    <div class="section-header" style="margin-bottom: 18px;">
+      <div class="section-kicker">Section 03 · The Table</div>
+      <h1 class="section-title">Your seat at <em>the table.</em></h1>
+      <p class="section-lede">Scroll through the six steps below to walk a single hand — from wager to settlement, with the seven-card deal and the split in between.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3D STAGE SCROLLYTELLING -->
+<div class="stage" id="stage">
+  <div class="stage-sticky">
+    <canvas id="stageCanvas"></canvas>
+    <div class="stage-progress"><div class="stage-progress-bar" id="stageBar"></div></div>
+    <div class="stage-overlay">
+      <div class="stage-panel" id="stagePanel" data-pos="right">
+        <div class="stage-panel-float">
+          <div class="stage-step" id="stageStep">Step 01 of 06</div>
+          <div class="stage-title" id="stageTitle">Place your wager</div>
+          <div class="stage-body" id="stageBody">A single bet, posted before the deal. Pai Gow Poker has no side bets you should care about — keep it simple.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SEC FLOW ═══ -->
+<section class="section" id="sec-flow">
+  <div class="section-header">
+    <div class="section-kicker">Section 04 · One Full Hand</div>
+    <h1 class="section-title">Anatomy of <em>a single hand.</em></h1>
+    <p class="section-lede">Every Pai Gow Poker hand is the same five steps: deal, set, dealer reveals, dealer sets the house way, compare. The only choice you get is how you split — and that one choice is the whole game.</p>
+  </div>
+
+  <div class="tabs" id="flow-tabs">
+    <button class="tab active" data-tab="flow-1"><span class="tab-cn">一</span>Deal</button>
+    <button class="tab" data-tab="flow-2"><span class="tab-cn">二</span>Set hand</button>
+    <button class="tab" data-tab="flow-3"><span class="tab-cn">三</span>Dealer reveals</button>
+    <button class="tab" data-tab="flow-4"><span class="tab-cn">四</span>House way</button>
+    <button class="tab" data-tab="flow-5"><span class="tab-cn">五</span>Settle</button>
+  </div>
+
+  <div class="tab-panel active" id="flow-1">
+    <div class="tab-panel-head">
+      <div>
+        <div class="tab-panel-title">The deal <span class="cn">· seven each, face down</span></div>
+        <div class="tab-panel-desc">Dealer deals <strong>seven cards</strong> to every player and seven to themselves. Cards stay face-down until everyone has set their hand.</div>
+      </div>
+    </div>
+    <div class="split-diagram">
+      <div class="split-row">
+        <div class="split-row-label">Your seven cards</div>
+        <div class="split-cards">
+          <img src="poker/AS.svg" alt="A♠">
+          <img src="poker/KH.svg" alt="K♥">
+          <img src="poker/QC.svg" alt="Q♣">
+          <img src="poker/9D.svg" alt="9♦">
+          <img src="poker/9S.svg" alt="9♠">
+          <img src="poker/4H.svg" alt="4♥">
+          <img src="poker/2C.svg" alt="2♣">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="flow-2">
+    <div class="tab-panel-head">
+      <div>
+        <div class="tab-panel-title">Set your hand <span class="cn">· split 5 + 2</span></div>
+        <div class="tab-panel-desc">Pick the two cards for your <strong>low hand</strong>. The other five form your <strong>high hand</strong>. The high hand must outrank the low hand — set them backwards and the hand is fouled (automatic loss).</div>
+      </div>
+    </div>
+    <div class="split-diagram">
+      <div class="split-row">
+        <div class="split-row-label">Your seven cards</div>
+        <div class="split-cards">
+          <img src="poker/AS.svg" alt="A♠">
+          <img src="poker/KH.svg" alt="K♥">
+          <img src="poker/QC.svg" alt="Q♣">
+          <img src="poker/9D.svg" alt="9♦">
+          <img src="poker/9S.svg" alt="9♠">
+          <img src="poker/4H.svg" alt="4♥">
+          <img src="poker/2C.svg" alt="2♣">
+        </div>
+      </div>
+      <div class="split-arrow">↓ split ↓</div>
+      <div class="split-result">
+        <div class="split-hand">
+          <div class="split-hand-name">High hand</div>
+          <div class="split-hand-sub">5 cards · pair of 9s, A high</div>
+          <div class="split-cards" style="justify-content:center;">
+            <img src="poker/AS.svg" alt="A♠">
+            <img src="poker/9D.svg" alt="9♦">
+            <img src="poker/9S.svg" alt="9♠">
+            <img src="poker/4H.svg" alt="4♥">
+            <img src="poker/2C.svg" alt="2♣">
+          </div>
+        </div>
+        <div class="split-hand">
+          <div class="split-hand-name">Low hand</div>
+          <div class="split-hand-sub">2 cards · K-Q high</div>
+          <div class="split-cards" style="justify-content:center;">
+            <img src="poker/KH.svg" alt="K♥">
+            <img src="poker/QC.svg" alt="Q♣">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="flow-3">
+    <div class="tab-panel-head">
+      <div>
+        <div class="tab-panel-title">Dealer reveals <span class="cn">· seven cards face up</span></div>
+        <div class="tab-panel-desc">Once every player has set, the dealer flips their seven cards face up.</div>
+      </div>
+    </div>
+    <div class="split-diagram">
+      <div class="split-row">
+        <div class="split-row-label">Dealer's seven cards</div>
+        <div class="split-cards">
+          <img src="poker/JD.svg" alt="J♦">
+          <img src="poker/JC.svg" alt="J♣">
+          <img src="poker/8H.svg" alt="8♥">
+          <img src="poker/7S.svg" alt="7♠">
+          <img src="poker/6D.svg" alt="6♦">
+          <img src="poker/3C.svg" alt="3♣">
+          <img src="poker/2H.svg" alt="2♥">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="flow-4">
+    <div class="tab-panel-head">
+      <div>
+        <div class="tab-panel-title">Dealer sets the house way <span class="cn">· no choice</span></div>
+        <div class="tab-panel-desc">The dealer never splits creatively. They follow a fixed table called the <em>house way</em> — a published rule for every possible seven-card combination. Same hand, same split, every time.</div>
+      </div>
+    </div>
+    <div class="split-diagram">
+      <div class="split-result">
+        <div class="split-hand">
+          <div class="split-hand-name">Dealer's high hand</div>
+          <div class="split-hand-sub">5 cards · pair of Jacks, 8 high</div>
+          <div class="split-cards" style="justify-content:center;">
+            <img src="poker/JD.svg" alt="J♦">
+            <img src="poker/JC.svg" alt="J♣">
+            <img src="poker/8H.svg" alt="8♥">
+            <img src="poker/6D.svg" alt="6♦">
+            <img src="poker/3C.svg" alt="3♣">
+          </div>
+        </div>
+        <div class="split-hand">
+          <div class="split-hand-name">Dealer's low hand</div>
+          <div class="split-hand-sub">2 cards · 7-2 high</div>
+          <div class="split-cards" style="justify-content:center;">
+            <img src="poker/7S.svg" alt="7♠">
+            <img src="poker/2H.svg" alt="2♥">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="callout jade">
+      <div class="callout-title">House way ≠ optimal</div>
+      <div class="callout-body">Dealers play the house way to remove decision time and accusations of favouritism. It's <em>conservative</em>, not optimal. With practice you can occasionally beat it — that's where Pai Gow strategy lives.</div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="flow-5">
+    <div class="tab-panel-head">
+      <div>
+        <div class="tab-panel-title">Compare and settle <span class="cn">· closest to nine? no — both must beat</span></div>
+        <div class="tab-panel-desc">Your high hand vs dealer's high. Your low hand vs dealer's low. Win <strong>both</strong> → you win, paid 1:1 minus a 5% commission. Win one, lose one → push (bet returned). Lose both → bet collected. Tie on either hand goes to the dealer (called a <em>copy</em>).</div>
+      </div>
+    </div>
+    <div class="split-diagram">
+      <div class="split-result">
+        <div class="split-hand">
+          <div class="split-hand-name">High · You vs Dealer</div>
+          <div class="split-hand-sub">9-9 vs J-J · dealer wins</div>
+        </div>
+        <div class="split-hand">
+          <div class="split-hand-name">Low · You vs Dealer</div>
+          <div class="split-hand-sub">K-Q vs 7-2 · you win</div>
+        </div>
+      </div>
+      <div class="pg-result-line push">Result · push. One won, one lost. Bet returned.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SEC HOUSEWAY ═══ -->
+<section class="section" id="sec-houseway">
+  <div class="section-header">
+    <div class="section-kicker">Section 05 · The House Way</div>
+    <h1 class="section-title">When does <em>a card go to the front?</em></h1>
+    <p class="section-lede"><strong>You don't need to memorize this.</strong> The dealer applies these rules automatically — and most casinos let you ask the dealer to set your hand the house way too. This table just shows you what they're doing, and where you might do better.</p>
+  </div>
+
+  <div class="houseway-grid">
+
+    <div class="tableau-col">
+      <h3 class="minor-title">No pair</h3>
+      <div class="houseway-sample">
+        <div class="houseway-sample-cards">
+          <img src="poker/AS.svg" alt="A♠">
+          <img src="poker/KH.svg" alt="K♥">
+          <img src="poker/JD.svg" alt="J♦">
+          <img src="poker/9C.svg" alt="9♣">
+          <img src="poker/7S.svg" alt="7♠">
+          <img src="poker/5H.svg" alt="5♥">
+          <img src="poker/3D.svg" alt="3♦">
+        </div>
+        <div class="houseway-sample-caption">Seven mismatched cards</div>
+      </div>
+      <div class="tableau-wrap">
+        <div class="tableau-head">
+          <div>
+            <div class="tableau-head-title">High card · no pair</div>
+            <div class="tableau-head-sub">Best two singletons go to the low hand</div>
+          </div>
+        </div>
+        <table class="tableau-table">
+          <thead><tr><th>You hold</th><th>House way</th></tr></thead>
+          <tbody>
+            <tr><td><strong class="tableau-range">Seven different cards</strong></td><td><span class="tab-badge stand">2nd + 3rd highest to low</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tableau-col">
+      <h3 class="minor-title">One pair</h3>
+      <div class="houseway-sample">
+        <div class="houseway-sample-cards">
+          <img src="poker/9D.svg" alt="9♦">
+          <img src="poker/9S.svg" alt="9♠">
+          <img src="poker/AS.svg" alt="A♠">
+          <img src="poker/KH.svg" alt="K♥">
+          <img src="poker/QC.svg" alt="Q♣">
+          <img src="poker/4H.svg" alt="4♥">
+          <img src="poker/2C.svg" alt="2♣">
+        </div>
+        <div class="houseway-sample-caption">Pair of 9s + five singletons</div>
+      </div>
+      <div class="tableau-wrap">
+        <div class="tableau-head">
+          <div>
+            <div class="tableau-head-title">A single pair</div>
+            <div class="tableau-head-sub">Pair stays with the five-card hand</div>
+          </div>
+        </div>
+        <table class="tableau-table">
+          <thead><tr><th>You hold</th><th>House way</th></tr></thead>
+          <tbody>
+            <tr><td><strong class="tableau-range">One pair + 5 singletons</strong></td><td><span class="tab-badge draw">Pair stays high · top two singletons low</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tableau-col">
+      <h3 class="minor-title">Two pair</h3>
+      <div class="houseway-sample">
+        <div class="houseway-sample-cards">
+          <img src="poker/9D.svg" alt="9♦">
+          <img src="poker/9S.svg" alt="9♠">
+          <img src="poker/4H.svg" alt="4♥">
+          <img src="poker/4S.svg" alt="4♠">
+          <img src="poker/AS.svg" alt="A♠">
+          <img src="poker/KH.svg" alt="K♥">
+          <img src="poker/QC.svg" alt="Q♣">
+        </div>
+        <div class="houseway-sample-caption">Two pair (9s · 4s) + three singletons</div>
+      </div>
+      <div class="tableau-wrap">
+        <div class="tableau-head">
+          <div>
+            <div class="tableau-head-title">Two pair · the pivot decision</div>
+            <div class="tableau-head-sub">Split or keep both — depends on rank + side card</div>
+          </div>
+        </div>
+        <table class="tableau-table">
+          <thead><tr><th>Top pair rank</th><th>House way</th></tr></thead>
+          <tbody>
+            <tr><td><strong class="tableau-range">2s through 6s</strong></td><td><span class="tab-badge stand">Both stay high (unless A in hand → split)</span></td></tr>
+            <tr><td><strong class="tableau-range">7s through 10s</strong></td><td><span class="tab-badge draw">Split (lower pair to low) unless K-or-better singleton</span></td></tr>
+            <tr><td><strong class="tableau-range">Js + Qs · Qs + Ks · etc.</strong></td><td><span class="tab-badge draw">Always split</span></td></tr>
+            <tr><td><strong class="tableau-range">Aces + anything</strong></td><td><span class="tab-badge draw">Always split — lower pair to low</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tableau-col">
+      <h3 class="minor-title">Three pair · trips · monsters</h3>
+      <div class="houseway-sample">
+        <div class="houseway-sample-cards">
+          <img src="poker/QD.svg" alt="Q♦">
+          <img src="poker/QS.svg" alt="Q♠">
+          <img src="poker/8H.svg" alt="8♥">
+          <img src="poker/8S.svg" alt="8♠">
+          <img src="poker/4C.svg" alt="4♣">
+          <img src="poker/4D.svg" alt="4♦">
+          <img src="poker/KH.svg" alt="K♥">
+        </div>
+        <div class="houseway-sample-caption">Three pair (Qs · 8s · 4s) — promote highest</div>
+      </div>
+      <div class="tableau-wrap">
+        <div class="tableau-head">
+          <div>
+            <div class="tableau-head-title">Stronger holdings</div>
+            <div class="tableau-head-sub">Most cases: keep the strength high, send the highest pair forward</div>
+          </div>
+        </div>
+        <table class="tableau-table">
+          <thead><tr><th>You hold</th><th>House way</th></tr></thead>
+          <tbody>
+            <tr><td><strong class="tableau-range">Three pair</strong></td><td><span class="tab-badge draw">Highest pair to <em>low</em>; play other two pair high</span></td></tr>
+            <tr><td><strong class="tableau-range">Three of a kind</strong></td><td><span class="tab-badge stand">Trips stay high (unless Aces → split)</span></td></tr>
+            <tr><td><strong class="tableau-range">Full house</strong></td><td><span class="tab-badge draw">Trips high · pair to low</span></td></tr>
+            <tr><td><strong class="tableau-range">Straight · flush · straight flush</strong></td><td><span class="tab-badge stand">Keep intact unless two pair are also present</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ SEC RANKINGS ═══ -->
+<section class="section" id="sec-rankings">
+  <div class="section-header">
+    <div class="section-kicker">Section 06 · Hand Rankings</div>
+    <h1 class="section-title">What <em>beats what.</em></h1>
+    <p class="section-lede">Standard poker hand rankings, plus one Pai Gow Poker oddity at the very top — five aces, made by combining the Joker with all four natural aces.</p>
+  </div>
+
+  <div class="rank-ladder">
+    <div class="rank-ladder-item"><span class="rank-num">01</span><div class="rank-name">Five Aces</div><div class="rank-desc">Joker + four natural Aces. Pai Gow's invented top hand.</div></div>
+    <div class="rank-ladder-item"><span class="rank-num">02</span><div class="rank-name">Royal Flush</div><div class="rank-desc">A-K-Q-J-10, all the same suit.</div></div>
+    <div class="rank-ladder-item"><span class="rank-num">03</span><div class="rank-name">Straight Flush</div><div class="rank-desc">Five suited consecutive cards.</div></div>
+    <div class="rank-ladder-item"><span class="rank-num">04</span><div class="rank-name">Four of a Kind</div><div class="rank-desc">Four cards of the same rank.</div></div>
+    <div class="rank-ladder-item"><span class="rank-num">05</span><div class="rank-name">Full House</div><div class="rank-desc">Three of a kind plus a pair.</div></div>
+    <div class="rank-ladder-item"><span class="rank-num">06</span><div class="rank-name">Flush</div><div class="rank-desc">Five cards of the same suit, not consecutive.</div></div>
+    <div class="rank-ladder-item"><span class="rank-num">07</span><div class="rank-name">Straight</div><div class="rank-desc">Five consecutive ranks. A-2-3-4-5 is the second-highest straight in most casinos.</div></div>
+    <div class="rank-ladder-item"><span class="rank-num">08</span><div class="rank-name">Three of a Kind</div><div class="rank-desc">Three cards of the same rank.</div></div>
+    <div class="rank-ladder-item"><span class="rank-num">09</span><div class="rank-name">Two Pair</div><div class="rank-desc">Two pairs of different ranks.</div></div>
+    <div class="rank-ladder-item"><span class="rank-num">10</span><div class="rank-name">One Pair</div><div class="rank-desc">Two cards of the same rank.</div></div>
+    <div class="rank-ladder-item"><span class="rank-num">11</span><div class="rank-name">High Card</div><div class="rank-desc">No pair. Highest card breaks all ties.</div></div>
+  </div>
+</section>
+
+<!-- ═══ SEC BETS ═══ -->
+<section class="section" id="sec-bets">
+  <div class="section-header">
+    <div class="section-kicker">Section 07 · Bets &amp; House Edge</div>
+    <h1 class="section-title">One bet. <em>One commission.</em></h1>
+    <p class="section-lede">Pai Gow Poker has only one main wager. It pays even money less a 5% commission on wins. The reason it isn't lower is the <em>copy rule</em> — when your hand exactly ties the dealer's, the dealer wins.</p>
+  </div>
+
+  <div class="odds-wrap">
+    <div class="odds-row">
+      <div class="odds-name">Win both <span class="pct">≈ 28.6% of hands</span></div>
+      <div class="odds-bar"><div class="odds-fill player" style="width: 0;" data-width="28.6"></div></div>
+      <div class="odds-edge">pays 0.95×</div>
+    </div>
+    <div class="odds-row">
+      <div class="odds-name">Push (split) <span class="pct">≈ 41.5%</span></div>
+      <div class="odds-bar"><div class="odds-fill tie" style="width: 0;" data-width="41.5"></div></div>
+      <div class="odds-edge">no swing</div>
+    </div>
+    <div class="odds-row">
+      <div class="odds-name">Lose both <span class="pct">≈ 29.9%</span></div>
+      <div class="odds-bar"><div class="odds-fill banker" style="width: 0;" data-width="29.9"></div></div>
+      <div class="odds-edge bad">−1.00×</div>
+    </div>
+  </div>
+
+  <p class="prose"><strong>The headline number:</strong> ~2.84% house edge if you play the house way. That's higher than baccarat Banker (1.06%) but lower than every craps proposition and most blackjack variants when played without basic strategy. The push rate is the magic — over <strong>40% of hands settle as a push</strong>, which is why a single chip can last a remarkably long time at the table.</p>
+
+  <p class="prose"><strong>Banking</strong> — at most casinos a player may, when offered, <em>be the bank</em> for one hand. The bank wins copies and earns the house's edge against everyone else, but pays the same 5% commission. It's the only spot where Pai Gow Poker tilts in your favour.</p>
+
+  <h3 class="minor-title">Side bets — same advice as everywhere else</h3>
+
+  <p class="prose-small">Casinos offer <em>Fortune Bonus</em>, <em>Pai Gow Insurance</em>, <em>Progressive</em> side bets. House edges typically run 7% to 25%. Skip them. Your one main bet at 2.84% is already the best math at the table.</p>
+
+  <div class="callout">
+    <div class="callout-title">The math, in one sentence</div>
+    <div class="callout-body">Play the house way, take the bank seat when offered, and ignore every side bet. That's the entire short-term strategy.</div>
+  </div>
+</section>
+
+<!-- ═══ SEC STRATEGY ═══ -->
+<section class="section" id="sec-strategy">
+  <div class="section-header">
+    <div class="section-kicker">Section 08 · Splitting Strategy</div>
+    <h1 class="section-title">When to <em>deviate from the house way.</em></h1>
+    <p class="section-lede">The house way is conservative. With a few simple deviations you can shave the edge down a bit further — and play better than the dealer is forced to.</p>
+  </div>
+
+  <div class="strategy-flip-grid" id="stratFlipGrid">
+
+    <article class="strat-flip strat-flip--green" data-tier="beginner">
+      <div class="strat-flip-inner">
+        <button type="button" class="strat-face strat-face--front strat-front--beginner" data-tier="beginner" aria-pressed="false">
+          <div class="strat-front-eyebrow">Difficulty</div>
+          <h3 class="strat-front-title">Beginner</h3>
+          <p class="strat-front-blurb">No memorization. Ask the dealer to set the house way for you. Lowest decision load.</p>
+          <div class="strat-front-foot">
+            <span class="strat-front-count">1 rule</span>
+            <span class="strat-front-cta">Reveal &rsaquo;</span>
+          </div>
+        </button>
+
+        <div class="strat-face strat-face--back" data-show-when="intermediate" aria-hidden="true">
+          <div class="strat-back-tag intermediate">Intermediate</div>
+          <div class="strat-back-name">Two-pair pivot</div>
+          <p class="strat-back-desc">With two pair, the rule is simpler than it looks: <strong>split unless your top pair is small (6 or under) and you have an Ace</strong>. Splitting wins more low hands; keeping both wins more high hands. The dealer's house way is conservative — splitting more often is correct.</p>
+          <div class="strat-meta">
+            <span>Adjusts <span class="val">~30% of hands</span></span>
+            <span>Edge cut <span class="val">~0.3%</span></span>
+          </div>
+        </div>
+
+        <div class="strat-face strat-face--back" data-show-when="advanced" aria-hidden="true">
+          <div class="strat-back-tag advanced">Advanced</div>
+          <div class="strat-back-name">Always-bank</div>
+          <p class="strat-back-desc">Take every offered bank. As the bank, copies go in your favour and you cover all other players' bets — a rare positive-edge spot in the casino. Requires bankroll for the table-wide variance.</p>
+          <div class="strat-meta">
+            <span>Edge <span class="val">−0.2% to flip</span></span>
+            <span>Bankroll <span class="val">Large</span></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="strat-flip strat-flip--gold" data-tier="intermediate">
+      <div class="strat-flip-inner">
+        <button type="button" class="strat-face strat-face--front strat-front--intermediate" data-tier="intermediate" aria-pressed="false">
+          <div class="strat-front-eyebrow">Difficulty</div>
+          <h3 class="strat-front-title">Intermediate</h3>
+          <p class="strat-front-blurb">A handful of rules, mostly around two pair and full houses. Straightforward to apply.</p>
+          <div class="strat-front-foot">
+            <span class="strat-front-count">3 rules</span>
+            <span class="strat-front-cta">Reveal &rsaquo;</span>
+          </div>
+        </button>
+
+        <div class="strat-face strat-face--back" data-show-when="beginner" aria-hidden="true">
+          <div class="strat-back-tag beginner">Beginner</div>
+          <div class="strat-back-name">Ask the dealer</div>
+          <p class="strat-back-desc">"Set it the house way." That's it. The dealer flips your seven cards and arranges them per the casino's table. You get the published 2.84% edge with zero memorization. Perfect for your first session.</p>
+          <div class="strat-meta">
+            <span>Edge <span class="val">2.84%</span></span>
+            <span>Effort <span class="val">None</span></span>
+          </div>
+        </div>
+
+        <div class="strat-face strat-face--back" data-show-when="advanced" aria-hidden="true">
+          <div class="strat-back-tag advanced">Advanced</div>
+          <div class="strat-back-name">Full-house breakdown</div>
+          <p class="strat-back-desc">House way: trips high, pair low. Better: with a <strong>small pair (2s–6s)</strong> and a high three of a kind, send the trips low only when you also hold an Ace or King in the side cards. The breakeven shifts with the pair rank — memorize the cutoffs.</p>
+          <div class="strat-meta">
+            <span>Adjusts <span class="val">Rare hands</span></span>
+            <span>Edge cut <span class="val">~0.05%</span></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="strat-flip strat-flip--red" data-tier="advanced">
+      <div class="strat-flip-inner">
+        <button type="button" class="strat-face strat-face--front strat-front--advanced" data-tier="advanced" aria-pressed="false">
+          <div class="strat-front-eyebrow">Difficulty</div>
+          <h3 class="strat-front-title">Advanced</h3>
+          <p class="strat-front-blurb">Bank every chance you get. Memorize edge cases in trips, full houses, and three-pair holdings.</p>
+          <div class="strat-front-foot">
+            <span class="strat-front-count">2 deviations</span>
+            <span class="strat-front-cta">Reveal &rsaquo;</span>
+          </div>
+        </button>
+
+        <div class="strat-face strat-face--back" data-show-when="beginner" aria-hidden="true">
+          <div class="strat-back-tag beginner">Beginner</div>
+          <div class="strat-back-name">Avoid fouls</div>
+          <p class="strat-back-desc">A "fouled" hand — one where the low hand outranks the high hand — is an automatic loss. The most common foul is putting a pair in the low hand while the high hand is just a high card. <strong>If your only pair is in the low hand, the high hand can have no pair and must be high enough — almost never worth it.</strong></p>
+          <div class="strat-meta">
+            <span>Foul rate <span class="val">~1 in 200</span></span>
+            <span>Cost <span class="val">Full bet</span></span>
+          </div>
+        </div>
+
+        <div class="strat-face strat-face--back" data-show-when="intermediate" aria-hidden="true">
+          <div class="strat-back-tag intermediate">Intermediate</div>
+          <div class="strat-back-name">Three-pair rule</div>
+          <p class="strat-back-desc">If you're dealt three pair (rare — about 1 in 60 hands), <strong>always send the highest pair to the low hand</strong>. The remaining two pair sit high. This wins more often than keeping the two top pair together because pairs in the low hand are very hard for the dealer to beat.</p>
+          <div class="strat-meta">
+            <span>Frequency <span class="val">~1 in 60</span></span>
+            <span>Win rate <span class="val">~70%</span></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="callout">
+    <div class="callout-title">The truth</div>
+    <div class="callout-body">No splitting strategy turns Pai Gow Poker into a winning game against the house. What it does is reduce variance, extend your session, and minimize the cost of being entertained. The bank seat is the only positive-edge spot — take it.</div>
+  </div>
+</section>
+
+<!-- ═══ SEC SIMULATOR ═══ -->
+<section class="section" id="sec-sim">
+  <div class="section-header">
+    <div class="section-kicker">Section 09 · Live Simulator</div>
+    <h1 class="section-title">Sit down. <em>Set a hand.</em></h1>
+    <p class="section-lede">Everything you've just read, in a live deal. Tap two cards to send them to your low hand — the rest become your high. Hit "Set hand" to compare against the dealer.</p>
+  </div>
+
+  <div class="sim" data-variant="paigow">
+
+    <div class="sim-head">
+      <div>
+        <div class="sim-title" id="pgSimTitle">Pai Gow Poker <span style="color:var(--gold-bright); font-style: italic;">· Live</span></div>
+        <div class="sim-sub" id="pgSimSub">53-card deck (Joker semi-wild) · Wins pay 0.95:1 · Copies go to dealer</div>
+      </div>
+      <div class="sim-bankroll">
+        <span class="sim-bankroll-label">Bankroll</span>
+        <div class="sim-bankroll-value" id="pgBankroll">$1,000</div>
+      </div>
+    </div>
+
+    <div class="sim-rules">
+      <div class="sim-rules-eyebrow">How it plays</div>
+      <p class="sim-rules-body">You and the dealer each get seven cards. Pick two for your <strong>low hand</strong> (the rest become your <strong>high hand</strong>). Your high hand must outrank your low hand or it's <em>fouled</em>. Both your hands are compared to the dealer's. Win both → win. Win one → push. Lose both → lose. Exact ties on either hand go to the dealer.</p>
+    </div>
+
+    <!-- Playfield: image background with cards positioned over the painted
+         HIGH / LOW slots for both Dealer (top) and Player (bottom). Bets
+         and action controls overlay the felt, baccarat-style. -->
+    <div class="sim-playfield pg-playfield">
+      <div class="pg-table-bg" aria-hidden="true"></div>
+
+      <!-- Card slot zones — exactly over the painted outlines on the table image -->
+      <div class="pg-slot-zone pg-slot-zone--dealer-high" id="pgDealerHigh"></div>
+      <div class="pg-slot-zone pg-slot-zone--dealer-low"  id="pgDealerLow"></div>
+      <div class="pg-slot-zone pg-slot-zone--player-high" id="pgYouHigh"></div>
+      <div class="pg-slot-zone pg-slot-zone--player-low pg-slot-zone--target" id="pgYouLow"></div>
+
+      <!-- Strength badges hover over the painted DEALER / PLAYER row labels -->
+      <div class="pg-table-strength pg-table-strength--dealer" id="pgDealerStrength">—</div>
+      <div class="pg-table-strength pg-table-strength--player" id="pgYouStrength">—</div>
+
+      <!-- Status pill over the very top / bottom rim -->
+      <div class="pg-table-status pg-table-status--dealer" id="pgDealerStatus">Awaiting deal</div>
+      <div class="pg-table-status pg-table-status--player" id="pgYouStatus">Place a bet to deal</div>
+
+      <!-- Wager chip lands in the painted MIDDLE POT circle when a bet is set -->
+      <div class="pg-table-chip" id="pgTableChip" hidden>
+        <span class="pg-table-chip-amount" id="pgTableChipAmount">$25</span>
+      </div>
+
+      <!-- Help icon next to the painted FORTUNE BONUS circle. Hover for the
+           explainer popup. -->
+      <button class="pg-help-icon" id="pgFortuneHelp" type="button"
+              aria-label="What is the Fortune Bonus?">?
+        <span class="pg-help-pop" role="tooltip">
+          <span class="pg-help-pop-eyebrow">Optional side bet</span>
+          <span class="pg-help-pop-title">Fortune Bonus</span>
+          <span class="pg-help-pop-body">Bet a small amount before the deal that your <strong>seven cards</strong> will form a strong poker hand (straight or better, using all 7 cards). Pays out on the strength of the hand:
+            <em>Straight (2:1) · Flush (4:1) · Full House (5:1) · Four of a Kind (25:1) · Straight Flush (50:1) · Royal Flush (150:1) · Five Aces (400:1)</em>.
+          </span>
+          <span class="pg-help-pop-foot">House edge ≈ 8% — fun to watch hit, but not the math-friendly bet. Skip it if you're playing for value.</span>
+        </span>
+      </button>
+
+    </div>
+
+    <!-- Action pill (chip row + buttons) — sits BELOW the playfield so
+         nothing gets clipped by the table's overflow:hidden. Same baccarat
+         chip styling. -->
+    <div class="sim-controls pg-controls">
+      <div class="sim-chip-row">
+        <button class="chip-btn"      data-pg-bet="5"   type="button">$5</button>
+        <button class="chip-btn c25"  data-pg-bet="25"  type="button">$25</button>
+        <button class="chip-btn c100" data-pg-bet="100" type="button">$100</button>
+        <button class="chip-btn c500" data-pg-bet="500" type="button">$500</button>
+      </div>
+      <button class="btn btn-primary" id="pgDealBtn" disabled>Deal</button>
+      <button class="btn" id="pgHouseWayBtn" disabled>House way</button>
+      <button class="btn" id="pgSetBtn" disabled>Set hand</button>
+      <button class="btn btn-ghost" id="pgResetBtn">Reset</button>
+    </div>
+
+    <!-- Below-table coach + hand readouts -->
+    <div class="pg-readouts">
+      <div class="pg-readout pg-readout--high">
+        <span class="pg-readout-label">Your high · 5</span>
+        <span class="pg-readout-value" id="pgHighSummary">—</span>
+      </div>
+      <div class="pg-readout pg-readout--low">
+        <span class="pg-readout-label">Your low · 2</span>
+        <span class="pg-readout-value" id="pgLowSummary">—</span>
+      </div>
+      <div class="pg-readout pg-readout--hint">
+        <span class="pg-readout-label">Coach</span>
+        <span class="pg-readout-value" id="pgHint">Place a bet, then deal.</span>
+      </div>
+    </div>
+
+    <div class="pg-result-line" id="pgResultLine">Place a bet to begin the shoe.</div>
+
+    <div class="sim-stats">
+      <div class="sim-stat"><div class="sim-stat-label">Hands</div><div class="sim-stat-value" id="pgStatHands">0</div></div>
+      <div class="sim-stat"><div class="sim-stat-label">Wins</div><div class="sim-stat-value jade" id="pgStatW">0</div></div>
+      <div class="sim-stat"><div class="sim-stat-label">Pushes</div><div class="sim-stat-value gold" id="pgStatP">0</div></div>
+      <div class="sim-stat"><div class="sim-stat-label">Losses</div><div class="sim-stat-value carmine" id="pgStatL">0</div></div>
+      <div class="sim-stat"><div class="sim-stat-label">Net</div><div class="sim-stat-value" id="pgStatNet">$0</div></div>
+    </div>
+
+    <div class="sim-log" id="pgSimLog">
+      <div class="sim-log-line"><span class="time">—</span><span>Place a bet and deal to begin.</span></div>
+    </div>
+
+    <!-- Golden trigger — opens the live-game step-by-step coach (the
+         walkthrough that highlights chip → deal → set → settle). Mirrors
+         baccarat's strat-demo-trigger pattern. -->
+    <button class="strat-demo-trigger" id="pgWalkTrigger" type="button">
+      <span class="strat-demo-trigger-icon">▶</span>
+      <span class="strat-demo-trigger-label">
+        <strong>Try the interactive walkthrough</strong>
+        <span>Step-by-step: pick a chip · deal · set your hand · settle</span>
+      </span>
+    </button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ WALKTHROUGH COACH ═══════════════════════════
+     Floating step card that watches the simulator and advances when the
+     user does the right thing. Disappears on its own after the first hand
+     finishes; the floating "?" reopens it. -->
+<div class="pg-walk" id="pgWalk" hidden aria-hidden="true">
+  <div class="pg-walk-card" role="dialog" aria-labelledby="pgWalkTitle">
+    <div class="pg-walk-progress">
+      <span>Step <strong id="pgWalkStep">1</strong> of <span id="pgWalkTotal">5</span></span>
+      <span style="color:var(--text-muted);">· Walkthrough</span>
+      <span class="pg-walk-progress-bar"><span class="pg-walk-progress-fill" id="pgWalkBar"></span></span>
+    </div>
+    <h3 class="pg-walk-title" id="pgWalkTitle">—</h3>
+    <p class="pg-walk-body" id="pgWalkBody">—</p>
+    <div class="pg-walk-foot">
+      <button class="pg-walk-skip" id="pgWalkSkip" type="button">Skip walkthrough</button>
+      <button class="pg-walk-next" id="pgWalkNext" type="button">Next →</button>
+    </div>
+    <span class="pg-walk-hint" id="pgWalkHint"></span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ OUTCOME EXPLAINER ═══════════════════════════
+     Modal that pops up after the first 1–2 hands settle, with a clean
+     side-by-side recap of each hand and a plain-English "why". -->
+<div class="sim-explain" id="pgExplain" hidden aria-hidden="true">
+  <div class="sim-explain-backdrop" id="pgExplainBackdrop"></div>
+  <div class="sim-explain-card" role="dialog" aria-modal="true" aria-labelledby="pgExplainTitle">
+    <div class="sim-explain-step" id="pgExplainStep">Hand 1 · why</div>
+    <h3 class="sim-explain-title" id="pgExplainTitle">—</h3>
+    <div class="pg-explain-pair" id="pgExplainPair"></div>
+    <p class="sim-explain-why" id="pgExplainWhy">—</p>
+    <div class="sim-explain-result" id="pgExplainResult">—</div>
+    <div class="sim-explain-foot">
+      <span class="sim-explain-note" id="pgExplainNote">One more quick explainer, then it plays at full speed.</span>
+      <button class="sim-explain-next" id="pgExplainNext" type="button">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Floating help button — re-opens the page tour (5 stops through the
+     guide). The live-game step coach has its own golden trigger button
+     below the simulator. Same look + ID as baccarat's helpFab so the
+     existing interactions.js tour code wires it up automatically. -->
+<button class="help-fab" id="helpFab" type="button" aria-label="Show intro tour" title="Intro tour">
+  <span class="help-fab-icon">?</span>
+  <span class="help-fab-pulse" aria-hidden="true"></span>
+</button>
+
+<!-- ═══ SEC FOCUS ═══ -->
+<section class="section" id="sec-etiquette">
+  <div class="section-header">
+    <div class="section-kicker">Section 10 · Focus</div>
+    <h1 class="section-title">Before you <em>sit down.</em></h1>
+    <p class="section-lede">Rules and odds tell you how the game works. These habits decide how long your bankroll lasts and what you walk away with.</p>
+  </div>
+
+  <ul class="etiquette-list">
+    <li>
+      <span class="etiquette-tag">Math</span>
+      <span class="etiquette-line"><strong>One main bet, no side bets.</strong> The base game runs at ~2.84% edge. Every side bet — Fortune, Insurance, Progressive — pushes that into double digits. Stick to the simple wager.</span>
+    </li>
+    <li>
+      <span class="etiquette-tag">Tempo</span>
+      <span class="etiquette-line"><strong>Pai Gow is slow.</strong> Forty percent of hands push, which means an average $25-bettor sees $25 swing back and forth across an hour. That's the appeal. Don't fight the tempo by betting bigger to feel something.</span>
+    </li>
+    <li>
+      <span class="etiquette-tag">Sizing</span>
+      <span class="etiquette-line"><strong>Keep your base bet at 2% of bankroll or less.</strong> A $500 session means $5 to $10 chips. With Pai Gow's high push rate, that's enough to play for hours.</span>
+    </li>
+    <li>
+      <span class="etiquette-tag">Bank</span>
+      <span class="etiquette-line"><strong>Take the bank when offered.</strong> Banking flips the copy rule in your favour and lets you absorb the table's edge. The only consistently positive-EV spot in Pai Gow Poker.</span>
+    </li>
+    <li>
+      <span class="etiquette-tag etiquette-tag-gold">The rule</span>
+      <span class="etiquette-line"><strong>Set a loss limit and a win target before you sit.</strong> When you hit either, you leave. The push rate makes Pai Gow a uniquely sticky game — you can play for hours without crossing either line, and that's how casinos eventually win.</span>
+    </li>
+  </ul>
+
+  <div style="text-align:center; padding: 32px 0 0;">
+    <div style="font-family: var(--font-display); font-style: italic; font-size: 28px; color: var(--gold-bright); margin-bottom: 8px;">Bonne chance.</div>
+    <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); letter-spacing: 0.2em; text-transform: uppercase;">— La maison salue ses joueurs</div>
+  </div>
+</section>
+
+<div class="footer-section">
+  <div class="footer-mark">牌九</div>
+  <div class="footer-text">
+    An interactive field guide · Educational material only · Gambling involves real financial risk. The house edge exists even when you understand it perfectly. If you or someone you know has a gambling problem, reach out to local support services.
+  </div>
+  <div class="footer-credit">Built by Biff Buster</div>
+</div>
+
+</main>
+</div>
+
+<!-- Three.js r147 — supports EXT_texture_webp (r140+), last release with global-script GLTFLoader at examples/js -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"
+        integrity="sha384-vV17nr/rMaJqmeZkFUzXLpHdQ+ME5QHKdydaqqN+3Ga39RJlNrTatJxHwGV4ml2C"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/loaders/GLTFLoader.js"
+        integrity="sha384-FassWWYNEPQsuRQm+59KIMcDetEc30bNyE9yfx16Ok8lvoowyH81LtrPmLWltJMh"
+        crossorigin="anonymous"></script>
+
+<!-- GSAP + ScrollTrigger -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+        integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+        integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d"
+        crossorigin="anonymous"></script>
+
+<!-- Interaction modules — shared interactions + Pai Gow stage + Pai Gow simulator -->
+<script src="src/js/interactions.js"></script>
+<script src="src/js/odds-roads.js"></script>
+<script src="src/js/stage-scene-paigow.js"></script>
+<script src="src/js/simulator-paigow.js"></script>
+</body>
+</html>

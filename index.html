@@ -53,6 +53,42 @@
 
     <nav class="topnav" id="topnav">
       <div class="topnav-item">
+        <button class="topnav-trigger topnav-trigger-game" data-menu="game-mode" aria-expanded="false">
+          <span class="game-mode-eyebrow">Game</span>
+          <span>Baccarat</span>
+          <span class="topnav-caret">▾</span>
+        </button>
+        <div class="topnav-dropdown" data-menu-panel="game-mode">
+          <div class="topnav-dropdown-label">Switch the game</div>
+          <div class="game-mode-list">
+            <a class="game-mode-item active" href="/">
+              <div class="game-mode-name">Baccarat</div>
+              <div class="game-mode-sub">百家樂</div>
+            </a>
+            <a class="game-mode-item" href="/pai-gow-poker">
+              <div class="game-mode-name">Pai Gow Poker</div>
+              <div class="game-mode-sub">牌九</div>
+            </a>
+            <span class="game-mode-item is-soon" aria-disabled="true">
+              <div class="game-mode-name">Ultimate Texas Hold'em</div>
+              <div class="game-mode-sub">德州撲克</div>
+              <span class="game-mode-soon">Coming soon</span>
+            </span>
+            <span class="game-mode-item is-soon" aria-disabled="true">
+              <div class="game-mode-name">Casino War</div>
+              <div class="game-mode-sub">戰爭</div>
+              <span class="game-mode-soon">Coming soon</span>
+            </span>
+            <span class="game-mode-item is-soon" aria-disabled="true">
+              <div class="game-mode-name">3-Card Poker</div>
+              <div class="game-mode-sub">三張撲克</div>
+              <span class="game-mode-soon">Coming soon</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="topnav-item">
         <button class="topnav-trigger" data-menu="start">Start <span class="topnav-caret">▾</span></button>
         <div class="topnav-dropdown" data-menu-panel="start">
           <div class="topnav-dropdown-label">New to baccarat? Begin here.</div>

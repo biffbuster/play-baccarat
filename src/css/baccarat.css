@@ -1407,6 +1407,17 @@ p.prose .carmine { color: var(--carmine-bright); font-weight: 600; }
   pointer-events: none;
 }
 
+/* Pai Gow hero — Chinese salon with chandeliers, lattice screens, and
+   light beams already baked in. Higher opacity than the baccarat shot
+   because the source is already darker, and a longer fade so the side
+   architecture reads further down the hero. */
+.hero--paigow .hero-bg-image {
+  background-image: url('../../media/pai-gow-bg.png');
+  opacity: 0.78;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 92%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 92%);
+}
+
 #heroCanvas, .hero-video {
   position: absolute;
   inset: 0;
@@ -5938,3 +5949,1252 @@ html, body { overflow-x: clip; }
 
   .welcome-bet-name { font-size: 16px; }
 }
+
+/* ============================================================
+   GAME MODE SWITCHER — header pill that swaps between games
+   ============================================================ */
+.topnav-trigger-game {
+  background: linear-gradient(135deg, rgba(201, 169, 97, 0.16), rgba(201, 169, 97, 0.04));
+  border: 1px solid var(--gold-ghost);
+  color: var(--ivory);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 5px 12px 5px 14px;
+  margin-right: 6px;
+}
+.topnav-trigger-game .game-mode-eyebrow {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-right: 8px;
+  opacity: 0.85;
+}
+.topnav-trigger-game:hover,
+.topnav-trigger-game[aria-expanded="true"] {
+  background: linear-gradient(135deg, rgba(201, 169, 97, 0.26), rgba(201, 169, 97, 0.08));
+  border-color: var(--gold-dim);
+  color: var(--ivory);
+}
+
+.game-mode-list { display: flex; flex-direction: column; gap: 2px; padding: 0 4px; }
+
+.game-mode-item {
+  display: block;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--ivory);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: background 0.18s ease, border-color 0.18s ease;
+  cursor: pointer;
+}
+.game-mode-item:hover {
+  background: rgba(201, 169, 97, 0.07);
+  border-left-color: var(--gold-dim);
+}
+.game-mode-item.active {
+  background: linear-gradient(90deg, rgba(201, 169, 97, 0.14), transparent);
+  border-left-color: var(--gold);
+}
+.game-mode-name {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ivory);
+  line-height: 1.1;
+}
+.game-mode-sub {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--text-muted);
+  margin-top: 3px;
+  letter-spacing: 0.02em;
+}
+.game-mode-item.active .game-mode-name { color: var(--gold-bright); }
+.game-mode-item.active .game-mode-sub  { color: var(--ivory-dim); }
+
+/* Coming-soon variants — dimmed, non-interactive, with a small badge. */
+.game-mode-item.is-soon {
+  position: relative;
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.game-mode-item.is-soon:hover {
+  background: transparent;
+  border-left-color: transparent;
+}
+.game-mode-soon {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  background: rgba(201, 169, 97, 0.1);
+  border: 1px solid rgba(201, 169, 97, 0.25);
+  border-radius: 999px;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .topnav-trigger-game .game-mode-eyebrow { display: none; }
+  .topnav-trigger-game { padding: 5px 10px; margin-right: 0; }
+}
+
+/* ============================================================
+   PAI GOW POKER — page-specific tweaks
+   Reuses every section/component class from the baccarat layout;
+   these rules only adjust the elements unique to Pai Gow Poker.
+   ============================================================ */
+
+/* Hand-rank ladder used in the "What beats what" section */
+.rank-ladder {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin: 28px 0 8px;
+}
+.rank-ladder-item {
+  position: relative;
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-felt) 100%);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px 16px 14px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.rank-ladder-item:hover { transform: translateY(-2px); border-color: var(--gold-dim); }
+.rank-ladder-item .rank-num {
+  position: absolute; top: 10px; right: 12px;
+  font-family: var(--font-mono); font-size: 11px; color: var(--text-muted);
+}
+.rank-ladder-item .rank-name {
+  font-family: var(--font-display); font-size: 19px; font-weight: 600;
+  color: var(--gold-bright); margin-bottom: 4px; line-height: 1.1;
+}
+.rank-ladder-item .rank-desc {
+  font-size: 13px; color: var(--text-secondary); line-height: 1.5;
+}
+.rank-ladder-item .rank-cards {
+  display: flex; gap: 4px; margin-top: 12px;
+}
+.rank-ladder-item .rank-cards img {
+  width: 38px; height: auto; border-radius: 3px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.45);
+}
+
+/* Split diagram — 7 cards splitting into 5 + 2 */
+.split-diagram {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 22px;
+  margin: 28px auto 6px;
+  max-width: 760px;
+  padding: 26px 22px;
+  background: var(--bg-felt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+.split-row {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.split-row-label {
+  font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--gold-dim);
+}
+/* Pai-gow only (these .split-* classes are unused on the baccarat page).
+   Every .split-cards row — the seven-card deal, the high hand, the low
+   hand — uses the same flex/overlap layout so each renders as a tight
+   held-in-hand fan instead of a sprawling spread. Hover lifts a card
+   and pulls it to the front so any individual card stays inspectable. */
+.split-cards {
+  display: flex; gap: 0; flex-wrap: nowrap; justify-content: center;
+}
+.split-cards img {
+  width: 60px; border-radius: 4px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+  position: relative;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.split-cards img + img {
+  margin-inline-start: -38px;
+}
+.split-cards img:nth-child(1) { z-index: 1; }
+.split-cards img:nth-child(2) { z-index: 2; }
+.split-cards img:nth-child(3) { z-index: 3; }
+.split-cards img:nth-child(4) { z-index: 4; }
+.split-cards img:nth-child(5) { z-index: 5; }
+.split-cards img:nth-child(6) { z-index: 6; }
+.split-cards img:nth-child(7) { z-index: 7; }
+.split-cards img:hover {
+  z-index: 20;
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.6);
+}
+.split-arrow {
+  text-align: center; color: var(--gold); font-size: 22px;
+  letter-spacing: 0.1em;
+}
+.split-result {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 18px;
+}
+@media (max-width: 600px) {
+  .split-result { grid-template-columns: 1fr; }
+}
+.split-hand {
+  background: var(--bg-card);
+  border: 1px solid var(--gold-ghost);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  text-align: center;
+}
+.split-hand-name {
+  font-family: var(--font-display); font-style: italic;
+  color: var(--gold-bright); font-size: 16px; margin-bottom: 4px;
+}
+.split-hand-sub {
+  font-size: 11px; font-family: var(--font-mono);
+  color: var(--text-muted); letter-spacing: 0.12em;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+
+/* Tiny seven-card sample under each house-way category title — same fan
+   layout as .split-cards but at ~60% scale so it sits comfortably above
+   the rules table. Hover lifts a card so any individual rank is readable. */
+.houseway-sample {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0 14px;
+}
+.houseway-sample-cards {
+  display: flex; gap: 0; flex-wrap: nowrap; justify-content: center;
+  padding-top: 6px;
+}
+.houseway-sample-cards img {
+  width: 38px; border-radius: 3px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.55);
+  position: relative;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.houseway-sample-cards img + img { margin-inline-start: -22px; }
+.houseway-sample-cards img:nth-child(1) { z-index: 1; }
+.houseway-sample-cards img:nth-child(2) { z-index: 2; }
+.houseway-sample-cards img:nth-child(3) { z-index: 3; }
+.houseway-sample-cards img:nth-child(4) { z-index: 4; }
+.houseway-sample-cards img:nth-child(5) { z-index: 5; }
+.houseway-sample-cards img:nth-child(6) { z-index: 6; }
+.houseway-sample-cards img:nth-child(7) { z-index: 7; }
+.houseway-sample-cards img:hover {
+  z-index: 20;
+  transform: translateY(-6px);
+  box-shadow: 0 10px 18px rgba(0,0,0,0.6);
+}
+.houseway-sample-caption {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  text-align: center;
+}
+
+/* House-way table — replaces the baccarat tableau */
+.houseway-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 18px;
+}
+@media (max-width: 720px) {
+  .houseway-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   PAI GOW LIVE PLAYFIELD — image-backed table with slot overlays
+   The pai-gow-table.png image (1620×971) is the felt background;
+   cards drop into the painted High/Low rectangles for each side
+   via percentage-positioned absolute overlays. Same scaling
+   pattern as baccarat's .sim-table--realistic so the table sits
+   at a fixed visual size at every viewport width.
+   ============================================================ */
+.pg-playfield {
+  position: relative;
+  width: 100%;
+  /* Aspect matches the source pai-gow-table.png (1620×971). */
+  aspect-ratio: 1620 / 971;
+  margin: 0 auto 24px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #050807;
+  box-shadow:
+    0 28px 60px rgba(0, 0, 0, 0.6),
+    0 0 0 1px var(--border-subtle) inset;
+}
+
+.pg-table-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    url('../../media/pai-gow-table.png') no-repeat center center;
+  background-size: 100% 100%;
+  pointer-events: none;
+}
+
+/* Slot zones — positioned over the painted HIGH / LOW boxes. We expand
+   the zone's height a bit beyond the painted box so the card has room to
+   show its full rank/suit corners (cards "sit on" the painted box rather
+   than being clipped to fit strictly inside). Wider gap between cards. */
+.pg-slot-zone {
+  position: absolute;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  gap: 1.2%;            /* roomier spacing between cards */
+  z-index: 4;
+  pointer-events: none; /* children re-enable per-card */
+}
+.pg-slot-zone--dealer-high,
+.pg-slot-zone--player-high {
+  grid-template-columns: repeat(5, 1fr);
+  width: 28%;
+  left: 18%;          /* shifted further left for more separation */
+}
+.pg-slot-zone--dealer-low,
+.pg-slot-zone--player-low {
+  grid-template-columns: repeat(2, 1fr);
+  width: 14.5%;
+  left: 61%;          /* shifted further right for more separation */
+}
+/* Taller zones so cards can be larger without being clipped by the
+   painted box height. */
+.pg-slot-zone--dealer-high,
+.pg-slot-zone--dealer-low { top: 22%; height: 18%; }
+
+.pg-slot-zone--player-high,
+.pg-slot-zone--player-low { top: 57.5%; height: 18%; }
+
+/* Highlight the player's LOW row when in selection mode. */
+.pg-slot-zone--target::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 1.5px dashed rgba(230, 201, 133, 0.55);
+  border-radius: 6px;
+  pointer-events: none;
+  animation: pgTargetPulse 2.4s ease-in-out infinite;
+}
+@keyframes pgTargetPulse {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 1; }
+}
+
+/* Cards inside slots — bare positioning wrappers. No background, no
+   overflow clip. The card SVG itself is a full poker card (white face,
+   rank/suit corners) so we just show it directly with a drop-shadow
+   (which traces the SVG silhouette, not a rectangle). */
+.pg-slot-zone .pg-card {
+  position: relative;
+  height: 100%;
+  width: auto;
+  aspect-ratio: 5 / 7;
+  max-width: 100%;
+  background: transparent;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 0.18s ease, filter 0.18s ease;
+  user-select: none;
+}
+.pg-slot-zone .pg-card img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  /* contain (not cover) — guarantees the full SVG (with rank/suit
+     corners) is visible, no cropping. */
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+/* Player cards are clickable; dealer cards aren't. */
+.pg-slot-zone--dealer-high .pg-card,
+.pg-slot-zone--dealer-low  .pg-card { cursor: default; }
+.pg-slot-zone--dealer-high .pg-card:hover,
+.pg-slot-zone--dealer-low  .pg-card:hover { transform: none; }
+
+/* Hover + selected states use drop-shadow (silhouette-aware) instead of
+   box-shadow (which would draw a rectangle around the now-transparent
+   card container). Selected card gets a gold halo via stacked drop-shadows. */
+.pg-slot-zone--player-high .pg-card:hover,
+.pg-slot-zone--player-low  .pg-card:hover {
+  transform: translateY(-3px);
+  filter:
+    drop-shadow(0 10px 18px rgba(0, 0, 0, 0.7))
+    drop-shadow(0 0 6px rgba(201, 169, 97, 0.55));
+}
+.pg-slot-zone .pg-card.is-selected {
+  transform: translateY(-6px);
+  filter:
+    drop-shadow(0 12px 22px rgba(0, 0, 0, 0.75))
+    drop-shadow(0 0 12px rgba(230, 201, 133, 0.85));
+}
+
+/* Status / strength overlays on the felt */
+.pg-table-status,
+.pg-table-strength {
+  position: absolute;
+  z-index: 5;
+  font-family: var(--font-mono);
+  font-size: clamp(9px, 0.95vw, 13px);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  background: rgba(0, 0, 0, 0.6);
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.pg-table-strength {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(11px, 1.15vw, 16px);
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--ivory);
+  border: 1px solid var(--gold-dim);
+}
+/* Status pills hover on the wood rim above DEALER / below PLAYER labels */
+.pg-table-status--dealer   { top: 4%;    left: 50%; transform: translateX(-50%); }
+.pg-table-status--player   { top: 53.5%; left: 50%; transform: translateX(-50%); }
+/* Strength badges land on the painted "DEALER" / "PLAYER" header lines */
+.pg-table-strength--dealer { top: 14%; left: 50%; transform: translateX(-50%); }
+.pg-table-strength--player { top: 49.2%; left: 50%; transform: translateX(-50%); }
+
+/* Wager chip lands on the painted MIDDLE POT circle when a bet is set */
+.pg-table-chip {
+  position: absolute;
+  top: 49.8%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4.8%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, var(--gold-bright), var(--gold) 50%, var(--gold-dim));
+  display: grid;
+  place-items: center;
+  z-index: 6;
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.7),
+    0 0 0 2px var(--bg-abyss),
+    0 0 0 3px rgba(230, 201, 133, 0.55),
+    0 0 24px rgba(230, 201, 133, 0.25);
+  animation: pgChipDrop 0.45s ease-out;
+}
+.pg-table-chip[hidden] { display: none; }
+.pg-table-chip-amount {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(10px, 1.1vw, 15px);
+  font-weight: 700;
+  color: var(--bg-abyss);
+}
+@keyframes pgChipDrop {
+  0%   { opacity: 0; transform: translate(-50%, -120%) rotate(180deg); }
+  100% { opacity: 1; transform: translate(-50%, -50%) rotate(0); }
+}
+
+/* Below-table readouts — high/low summaries + coach hint */
+.pg-readouts {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.6fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+@media (max-width: 720px) {
+  .pg-readouts { grid-template-columns: 1fr; }
+}
+.pg-readout {
+  background: var(--bg-felt-deep);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.pg-readout-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.pg-readout-value {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ivory);
+}
+.pg-readout--hint .pg-readout-value {
+  font-family: var(--font-body);
+  font-style: normal;
+  font-size: 12.5px;
+  color: var(--ivory-dim);
+  line-height: 1.4;
+}
+
+/* Action pill — chip row + action buttons. Sits as a normal block right
+   below the playfield (NOT positioned absolutely inside it). This avoids
+   the playfield's overflow:hidden clipping the bottom buttons when the
+   pill wraps to two rows on narrower viewports. */
+.pg-controls {
+  margin: 14px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 1vw, 14px);
+  flex-wrap: wrap;
+  padding: clamp(8px, 0.9vw, 12px) clamp(16px, 1.6vw, 24px);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.75));
+  border: 1px solid rgba(201, 169, 97, 0.25);
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  width: max-content;
+  max-width: calc(100% - 16px);
+}
+.pg-controls .sim-chip-row { gap: clamp(6px, 0.7vw, 10px); }
+.pg-controls .chip-btn {
+  width: clamp(36px, 3.2vw, 46px);
+  height: clamp(36px, 3.2vw, 46px);
+  font-size: clamp(10px, 0.9vw, 12px);
+}
+.pg-controls .btn {
+  padding: clamp(7px, 0.85vw, 11px) clamp(12px, 1.4vw, 20px);
+  font-size: clamp(11px, 0.95vw, 13px);
+}
+
+/* Pai Gow live game — aggressively compress everything above the
+   playfield so the table sits as high in the section as possible. */
+.sim[data-variant="paigow"] .sim-head     { margin-bottom: 8px; gap: 12px; }
+.sim[data-variant="paigow"] .sim-rules    { margin-bottom: 10px; padding: 8px 12px; }
+.sim[data-variant="paigow"] .sim-rules-body { font-size: 12px; line-height: 1.45; }
+.sim[data-variant="paigow"] .sim-rules-eyebrow { font-size: 9px; margin-bottom: 4px; }
+.sim[data-variant="paigow"] .sim-bankroll-value { font-size: 20px; }
+.sim[data-variant="paigow"] .sim-title { font-size: 16px; }
+.sim[data-variant="paigow"] .sim-sub   { font-size: 11px; }
+/* Tighten the section header above as well */
+#sec-sim .section-header { margin-bottom: 22px; }
+#sec-sim .section-lede { font-size: 14px; }
+
+/* FORTUNE BONUS help icon — small "?" pinned next to the painted circle
+   on the right side of the felt, with a hover tooltip explaining the
+   side bet. */
+.pg-help-icon {
+  position: absolute;
+  /* Sits at the top-right of the painted FORTUNE BONUS circle so the
+     "?" reads as the disclaimer for that bet. */
+  top: 28%;
+  right: 5.5%;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold-dim));
+  border: 1.5px solid var(--bg-abyss);
+  color: var(--bg-abyss);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  z-index: 7;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.6),
+    0 0 14px rgba(230, 201, 133, 0.45);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.pg-help-icon:hover,
+.pg-help-icon:focus-visible {
+  transform: scale(1.12);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7), 0 0 22px rgba(230, 201, 133, 0.65);
+}
+
+.pg-help-pop {
+  position: absolute;
+  /* Drops below the "?" icon so the start of the popup stays visible —
+     popping above clipped the title off-screen at typical scroll positions. */
+  top: calc(100% + 14px);
+  right: -8px;
+  width: 280px;
+  padding: 13px 15px 12px;
+  background: linear-gradient(180deg, rgba(28, 22, 14, 0.97) 0%, rgba(10, 8, 4, 0.97) 100%);
+  border: 1px solid var(--gold-dim);
+  border-radius: var(--radius-md);
+  box-shadow:
+    0 24px 50px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(201, 169, 97, 0.1) inset,
+    0 0 32px rgba(201, 169, 97, 0.16);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  z-index: 8;
+}
+.pg-help-pop::after {
+  /* Caret on the TOP edge of the popup, pointing up at the "?" icon. */
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  right: 14px;
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(315deg, transparent 50%, rgba(28, 22, 14, 0.97) 50%);
+  border-left: 1px solid var(--gold-dim);
+  border-top: 1px solid var(--gold-dim);
+  margin-bottom: -6px;
+  rotate: 45deg;
+}
+.pg-help-pop-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+}
+.pg-help-pop-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--gold-bright);
+  line-height: 1.15;
+  margin-bottom: 2px;
+}
+.pg-help-pop-body {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ivory-dim);
+}
+.pg-help-pop-body strong { color: var(--ivory); font-weight: 600; }
+.pg-help-pop-body em { color: var(--gold-bright); font-style: italic; font-weight: 600; }
+.pg-help-pop-foot {
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(201, 169, 97, 0.18);
+  font-size: 11px;
+  font-style: italic;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.pg-help-icon:hover .pg-help-pop,
+.pg-help-icon:focus-visible .pg-help-pop {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ============================================================
+   PAI GOW LIVE GAME — MOBILE (≤720px)
+   Mirror baccarat's mobile sim layout: stakes shrink, chip row +
+   action buttons grid into a compact stack so Deal / Set hand /
+   Reset all stay reachable on a 320 px phone.
+   ============================================================ */
+@media (max-width: 720px) {
+  .pg-playfield { border-radius: var(--radius-md); margin-bottom: 12px; }
+
+  /* Status / strength overlays — shrink so they don't blot out the felt */
+  .pg-table-status,
+  .pg-table-strength { font-size: 8.5px; padding: 2px 6px; }
+  .pg-table-strength { font-size: 10px; }
+
+  /* Wager chip on MIDDLE POT — slightly larger so the amount stays readable */
+  .pg-table-chip { width: 7%; }
+  .pg-table-chip-amount { font-size: clamp(8px, 1.6vw, 11px); }
+
+  /* Help icon / popup */
+  .pg-help-icon { width: 22px; height: 22px; font-size: 12px; }
+  .pg-help-pop { width: 220px; right: -4px; }
+
+  /* Card slot zones — keep the painted-box alignment but allow cards to
+     scale down with viewport so 5 fit in HIGH and 2 fit in LOW. */
+  .pg-slot-zone { gap: 0.6%; }
+
+  /* ---- Action pill below the table: grid layout matching baccarat ---- */
+  .pg-controls {
+    width: 100%;
+    max-width: none;
+    margin: 12px 0 0;
+    padding: 12px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(22, 22, 22, 0.97), rgba(10, 10, 10, 0.98));
+    border: 1px solid rgba(201, 169, 97, 0.22);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "chips chips"
+      "deal  deal"
+      "house house"
+      "set   reset";
+    gap: 10px;
+  }
+  .pg-controls .sim-chip-row {
+    grid-area: chips;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+  }
+  .pg-controls .chip-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    max-width: 72px;
+    height: 48px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    font-size: 12px;
+    margin: 0 auto;
+  }
+  .pg-controls .btn {
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .pg-controls #pgDealBtn     { grid-area: deal; }
+  .pg-controls #pgHouseWayBtn { grid-area: house; min-height: 42px; font-size: 12.5px; }
+  .pg-controls #pgSetBtn      { grid-area: set;   min-height: 44px; font-size: 13px; }
+  .pg-controls #pgResetBtn    { grid-area: reset; min-height: 44px; font-size: 13px; }
+
+  /* Coach + hand readouts — single column instead of 3 */
+  .pg-readouts { grid-template-columns: 1fr; gap: 8px; }
+  .pg-readout { padding: 8px 12px; }
+  .pg-readout-label { font-size: 8.5px; }
+  .pg-readout-value { font-size: 13px; }
+
+  /* Strength badges position higher on mobile so the painted plaque
+     "DEALER" / "PLAYER" text stays readable */
+  .pg-table-strength--dealer { top: 12%; }
+  .pg-table-strength--player { top: 73%; }
+}
+
+/* ---- Smallest phones (≤400px): tighten chip + button sizing ---- */
+@media (max-width: 400px) {
+  .pg-controls .chip-btn { height: 44px; font-size: 11px; }
+  .pg-controls .btn { min-height: 42px; font-size: 12.5px; padding: 8px 10px; }
+  .pg-table-status, .pg-table-strength { font-size: 8px; padding: 2px 5px; }
+}
+.pg-result-line {
+  text-align: center; font-family: var(--font-display);
+  font-style: italic; font-size: 18px; color: var(--ivory);
+  padding: 10px;
+}
+.pg-result-line.win  { color: var(--jade-bright); }
+.pg-result-line.lose { color: var(--carmine-bright); }
+.pg-result-line.push { color: var(--gold-bright); }
+
+.pg-hand-strength {
+  display: inline-block;
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--gold-bright);
+  padding: 2px 8px; border: 1px solid var(--gold-ghost);
+  border-radius: 999px; margin-left: 8px;
+}
+
+/* ============================================================
+   PAI GOW WALKTHROUGH — step-by-step coach for the live sim
+   ============================================================ */
+
+/* Floating step card — anchors to the bottom-right of the viewport while the
+   user is in the simulator, with a connector line pointing toward the
+   pulsing UI target. Doesn't block clicks on the rest of the page. */
+.pg-walk {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: min(360px, calc(100vw - 32px));
+  z-index: 320;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+.pg-walk[hidden] { display: none; }
+.pg-walk.active { opacity: 1; transform: translateY(0); pointer-events: none; }
+.pg-walk-card {
+  pointer-events: auto;
+  background: linear-gradient(180deg, rgba(28, 22, 14, 0.97) 0%, rgba(10, 8, 4, 0.97) 100%);
+  border: 1px solid var(--gold-dim);
+  border-radius: var(--radius-md);
+  padding: 16px 18px 14px;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(201, 169, 97, 0.12) inset,
+    0 0 36px rgba(201, 169, 97, 0.18);
+  color: var(--ivory);
+  font-family: var(--font-body);
+}
+.pg-walk-progress {
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--gold-dim); margin-bottom: 8px;
+}
+.pg-walk-progress strong { color: var(--gold-bright); font-weight: 600; }
+.pg-walk-progress-bar {
+  margin-left: auto; width: 80px; height: 3px;
+  background: rgba(201, 169, 97, 0.16);
+  border-radius: 999px; overflow: hidden;
+}
+.pg-walk-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold-bright));
+  width: 0; transition: width 0.35s ease;
+}
+.pg-walk-title {
+  font-family: var(--font-display);
+  font-size: 19px; font-weight: 600;
+  color: var(--ivory); margin-bottom: 6px;
+  line-height: 1.2;
+}
+.pg-walk-title em { color: var(--gold-bright); font-style: italic; }
+.pg-walk-body {
+  font-size: 13px; line-height: 1.55;
+  color: var(--ivory-dim); margin-bottom: 12px;
+}
+.pg-walk-body strong { color: var(--ivory); }
+.pg-walk-body em { color: var(--gold-bright); font-style: italic; }
+.pg-walk-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding-top: 10px;
+  border-top: 1px solid rgba(201, 169, 97, 0.12);
+}
+.pg-walk-skip {
+  background: transparent; border: none;
+  color: var(--text-muted); font-family: inherit;
+  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; padding: 4px 6px;
+  transition: color 0.18s ease;
+}
+.pg-walk-skip:hover { color: var(--ivory-dim); }
+.pg-walk-next {
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold-dim));
+  border: none; color: var(--bg-abyss);
+  font-family: inherit; font-size: 12px; font-weight: 600;
+  letter-spacing: 0.04em; padding: 8px 16px;
+  border-radius: var(--radius-sm); cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 12px rgba(201, 169, 97, 0.25);
+}
+.pg-walk-next:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(201, 169, 97, 0.35); }
+.pg-walk-next:disabled {
+  opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none;
+}
+.pg-walk-hint {
+  display: block;
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0.06em; color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Continuous pulse on the current step's target. Stronger and looping —
+   .tour-pulse is a one-shot, this is "stay highlighted until we move on." */
+.pg-walk-target {
+  position: relative;
+  z-index: 6;
+  animation: pgWalkPulse 1.8s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+@keyframes pgWalkPulse {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(201, 169, 97, 0.25), 0 0 0px rgba(201, 169, 97, 0); }
+  50%      { box-shadow: 0 0 0 3px rgba(230, 201, 133, 0.7), 0 0 36px rgba(201, 169, 97, 0.5); }
+}
+
+/* Note: the bottom-left "?" floating button on Pai Gow now uses the
+   shared .help-fab class (same as baccarat). The previous .pg-help-fab
+   class was removed when we wired the fab to the page-level intro tour
+   instead of the live-game walkthrough. */
+
+@media (max-width: 600px) {
+  .pg-walk { right: 12px; left: 12px; bottom: 12px; width: auto; }
+}
+
+/* Reuse .sim-explain for the post-hand outcome modal — no new CSS, only an
+   alternate ID. Cards inside use this pair-naming when listing the split. */
+.pg-explain-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 12px 0 6px;
+  font-size: 13px;
+}
+.pg-explain-pair > div {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+}
+.pg-explain-pair .lbl {
+  display: block;
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 3px;
+}
+.pg-explain-pair .row {
+  display: flex; justify-content: space-between; gap: 8px;
+  padding: 2px 0;
+  font-family: var(--font-body); color: var(--ivory-dim);
+}
+.pg-explain-pair .row.win  strong { color: var(--jade-bright); }
+.pg-explain-pair .row.lose strong { color: var(--carmine-bright); }
+.pg-explain-pair .row.push strong { color: var(--gold-bright); }
+
+/* ============================================================
+   PAI GOW — PANEL 01 SPLIT ANIMATION
+   Replaces the spinning bet-box pattern with a card-fan that
+   visually splits 7 → 5 + 2. This is the defining mechanic of
+   Pai Gow Poker, so the panel-01 visual demonstrates it.
+   ============================================================ */
+.welcome-split {
+  position: relative;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+/* Stage holds all cards in absolute positioning so the transform-based
+   transitions don't reflow surrounding text. Width is the natural span
+   of seven 50px cards at 42px stride + 8px wiggle = ~302px. */
+.welcome-split-stage {
+  position: relative;
+  height: 240px;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+/* Each card uses CSS custom props for both states: --xR/--yR are the
+   "row" (united) coords; --xS/--yS are the "split" coords. The single
+   transform property switches between them as the parent state flips,
+   giving a smooth GPU-accelerated transition with one easing curve. */
+.welcome-split-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50px;
+  height: 70px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--ivory);
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(0, 0, 0, 0.15);
+  transform: translate(var(--xR), var(--yR)) rotate(0deg);
+  transition: transform 0.85s cubic-bezier(0.65, 0.02, 0.18, 1.04),
+              box-shadow 0.5s ease,
+              filter 0.5s ease;
+  z-index: 2;
+}
+.welcome-split-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Split state — cards translate to their high/low positions. Low-hand
+   cards get a gold-rim halo so the eye snaps to which two were chosen. */
+.welcome-split[data-state="split"] .welcome-split-card {
+  transform: translate(var(--xS), var(--yS)) rotate(var(--rotS, 0deg));
+}
+.welcome-split[data-state="split"] .welcome-split-card--low {
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.6),
+    0 0 0 1.5px var(--gold-bright),
+    0 0 22px rgba(230, 201, 133, 0.45);
+  z-index: 3;
+}
+
+/* Brackets — thin gold rules with labels. Hidden when united; fade +
+   slide in when the cards split. */
+.welcome-split-bracket {
+  position: absolute;
+  display: block;
+  border: 1px solid rgba(201, 169, 97, 0.45);
+  border-radius: 6px;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s;
+  pointer-events: none;
+}
+.welcome-split-bracket-label {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-felt);
+  padding: 0 8px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  white-space: nowrap;
+}
+
+.welcome-split-bracket--high {
+  /* Wraps the 5 cards (xS spans 0 → 240+50) in the top row */
+  top: -8px;
+  left: -8px;
+  width: 306px;
+  height: 86px;
+}
+.welcome-split-bracket--low {
+  /* Wraps the 2 cards (xS 142 → 188+50) in the bottom row */
+  top: 110px;
+  left: 134px;
+  width: 112px;
+  height: 86px;
+}
+
+.welcome-split[data-state="split"] .welcome-split-bracket {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Caption — cross-fades between two lines as the state flips. */
+.welcome-split-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ivory-dim);
+  height: 22px;
+}
+.welcome-split-caption-line {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+.welcome-split-caption-line em {
+  color: var(--gold-bright);
+  font-style: italic;
+  font-weight: 600;
+}
+.welcome-split[data-state="united"] .welcome-split-caption-line--united { opacity: 1; }
+.welcome-split[data-state="split"]  .welcome-split-caption-line--split  { opacity: 1; }
+
+/* Mobile — shrink the stage so 7 cards still fit on a 320 px viewport. */
+@media (max-width: 420px) {
+  .welcome-split-stage {
+    height: 220px;
+    transform: scale(0.85);
+    transform-origin: top center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome-split-card,
+  .welcome-split-bracket,
+  .welcome-split-caption-line { transition: none; }
+}
+
+/* ---- Pai Gow welcome grid: drop the dashed connector + speed up the
+   "what happens at the table" step reveal. Both rules are scoped to the
+   --paigow modifier so the baccarat layout is untouched. */
+.welcome-grid--paigow::before { display: none !important; }
+
+.welcome-grid--paigow .welcome-steps li {
+  /* 14 s → 7 s. Keyframes are percentage-based, so the cadence stays
+     proportional — each step still appears, holds, fades in turn, just
+     twice as fast. */
+  animation-duration: 7s;
+}
+
+/* ============================================================
+   PAI GOW — DECK SPREAD VARIANT
+   Replaces the baccarat ♠ on the back with a stacked 牌九 wordmark,
+   and renders three of the cards face-up with hover popups that
+   describe the card's role. Reuses the .deck-spread engine so the
+   stagger / cubic-bezier easing / scroll trigger all match.
+   ============================================================ */
+
+/* 牌九 wordmark on the back — replaces the ::after ♠ used by baccarat. */
+.pg-deck .deck-spread-back::after { display: none; }
+
+.pg-back-mark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  pointer-events: none;
+  font-family: 'Microsoft YaHei', 'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif;
+  font-weight: 700;
+  font-size: calc(var(--card-w) * 0.34);
+  color: var(--gold);
+  text-shadow: 0 0 14px rgba(201, 169, 97, 0.5);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+}
+.pg-back-mark span { display: block; }
+
+/* Face-up card variant — uses an actual SVG card art instead of the
+   carmine back. Removes the back's filigree pseudo-elements and sits
+   on top of the deck so the face reads cleanly. */
+.deck-spread-card--face {
+  background: var(--ivory);
+  overflow: visible; /* allow tooltip to escape */
+}
+.deck-spread-card--face::before,
+.deck-spread-card--face::after { content: none; }
+.deck-spread-card--face > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+/* Subtle gold rim so the face-up cards read as "highlighted" against the
+   row of carmine backs even before hover. */
+.deck-spread-card--face {
+  box-shadow:
+    0 6px 28px rgba(0, 0, 0, 0.6),
+    0 0 0 1.5px rgba(230, 201, 133, 0.55),
+    0 0 22px rgba(201, 169, 97, 0.18);
+}
+
+/* Face-up cards already raise on hover (inherited from .deck-spread.is-spread
+   .deck-spread-card:hover); we add a stronger gold halo + raise so the
+   tooltip placement reads as anchored to the card. */
+.deck-spread.is-spread .deck-spread-card--face:hover {
+  transform: translate3d(var(--offset, 0), -22px, 0) scale(1.08);
+  box-shadow:
+    0 22px 56px rgba(0, 0, 0, 0.75),
+    0 0 0 2px var(--gold-bright),
+    0 0 40px rgba(230, 201, 133, 0.45);
+}
+
+/* Tooltip popup — sits above the face-up card, fades + slides in on hover.
+   Sized so it reads at a glance without overflowing typical viewports. */
+.deck-tip {
+  position: absolute;
+  bottom: calc(100% + 16px);
+  left: 50%;
+  width: 280px;
+  transform: translate(-50%, 6px);
+  padding: 14px 16px 13px;
+  background: linear-gradient(180deg, rgba(28, 22, 14, 0.97) 0%, rgba(10, 8, 4, 0.97) 100%);
+  border: 1px solid var(--gold-dim);
+  border-radius: var(--radius-md);
+  box-shadow:
+    0 24px 50px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(201, 169, 97, 0.1) inset,
+    0 0 32px rgba(201, 169, 97, 0.14);
+  text-align: left;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  z-index: 200;
+}
+/* Caret connecting the tooltip to the card */
+.deck-tip::after {
+  content: '';
+  position: absolute;
+  top: 100%; left: 50%;
+  transform: translateX(-50%);
+  width: 14px; height: 14px;
+  background: linear-gradient(135deg, transparent 50%, rgba(10, 8, 4, 0.97) 50%);
+  border-right: 1px solid var(--gold-dim);
+  border-bottom: 1px solid var(--gold-dim);
+  margin-top: -7px;
+  rotate: 45deg;
+}
+.deck-tip-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 4px;
+}
+.deck-tip-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--gold-bright);
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+.deck-tip-body {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--ivory-dim);
+}
+.deck-tip-body strong { color: var(--ivory); font-weight: 600; }
+.deck-tip-body em     { color: var(--gold-bright); font-style: italic; }
+
+.deck-spread-card--face:hover .deck-tip,
+.deck-spread-card--face:focus-visible .deck-tip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
+
+/* Edge-case: the leftmost / rightmost face-up cards risk pushing the
+   tooltip off-screen. Nudge it inward when the card sits near the row
+   ends. The deck-spread track is centered, so left-edge cards live at
+   data-i values < ~3, right-edge at > ~9. */
+.pg-deck .deck-spread-card--face[data-i="3"] .deck-tip { left: 65%; }
+.pg-deck .deck-spread-card--face[data-i="9"] .deck-tip { left: 35%; }
+
+@media (max-width: 720px) {
+  .deck-tip { width: 220px; padding: 12px 14px 11px; }
+  .deck-tip-title { font-size: 16px; }
+  .deck-tip-body { font-size: 11.5px; }
+}
+
+@media (max-width: 480px) {
+  /* On narrow screens the row is too tight for off-card tooltips; pin them
+     below the deck so they don't get clipped. */
+  .deck-tip {
+    position: fixed;
+    bottom: 16px; left: 16px; right: 16px;
+    width: auto; max-width: none;
+    transform: translateY(0);
+  }
+  .deck-tip::after { display: none; }
+}
+

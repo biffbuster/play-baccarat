@@ -266,16 +266,20 @@ updateNav();
 /* -------- SHOE: deck-spread on scroll --------
    Stacked cards translate to their own --offset when the section enters
    viewport. Mirrors the Framer CardDeckSpread mechanic with a 90 ms stagger
-   and cubic-bezier(0.25, 0.8, 0.25, 1) easing handled in CSS. */
-(function initDeckSpread() {
-  const deck = document.getElementById('deckSpread');
-  if (!deck) return;
+   and cubic-bezier(0.25, 0.8, 0.25, 1) easing handled in CSS.
+   Runs once for any .deck-spread element on the page (baccarat sec-deck
+   uses #deckSpread; pai-gow sec-cards uses #pgDeckSpread). */
+document.querySelectorAll('.deck-spread').forEach((deck) => initDeckSpread(deck));
+function initDeckSpread(deck) {
   const cards = [...deck.querySelectorAll('.deck-spread-card')];
   if (!cards.length) return;
 
   const isMobile = window.matchMedia('(max-width: 900px)').matches;
-  /* Match the CSS --overlap (per-card x-shift). 110 desktop / 70 mobile. */
-  const o = isMobile ? 70 : 110;
+  /* Match the CSS --overlap (per-card x-shift). 110 desktop / 70 mobile.
+     Pai Gow's deck has 13 cards instead of 8, so we pull the per-card
+     shift in slightly so the row still fits its container. */
+  const isPaiGow = deck.classList.contains('pg-deck');
+  const o = isMobile ? (isPaiGow ? 50 : 70) : (isPaiGow ? 88 : 110);
   const totalSpan = (cards.length - 1) * o;
 
   cards.forEach((c, i) => {
@@ -321,7 +325,7 @@ updateNav();
     };
     window.addEventListener('scroll', onScroll, { passive: true });
   }
-})();
+}
 
 
 /* Section 02 value cards now use a pure-CSS :hover enlarge — no scroll
@@ -356,10 +360,10 @@ if (rsvpToast) {
 
 
 /* -------- INTRO TOUR --------
-   First-visit modal walking the user through the four sections that matter
-   most. Pulses each target and scrolls into view. Dismissal is remembered
-   in localStorage; "Replay tour" lives in the Settings dropdown. */
-const tourSteps = [
+   First-visit modal walking the user through the sections that matter most.
+   Pulses each target and scrolls into view. Steps are page-specific —
+   detected by the presence of unique section IDs. */
+const _baccaratTour = [
   {
     title: "Welcome — quick tour?",
     body: "I'll point out the four sections that matter most. About 30 seconds. Hit Next to begin.",
@@ -386,6 +390,35 @@ const tourSteps = [
     target: 'sec-sim'
   }
 ];
+const _paigowTour = [
+  {
+    title: "Welcome — quick tour?",
+    body: "Five quick stops through the Pai Gow Poker guide. About 30 seconds. Hit Next to begin.",
+    target: null
+  },
+  {
+    title: "Start with the basics",
+    body: "Three panels: what the game is, what the cards count, and what happens when you sit down. The whole game in three minutes.",
+    target: 'sec-welcome'
+  },
+  {
+    title: "Watch a hand play out",
+    body: "A scroll-driven 3D walkthrough of one full Pai Gow Poker hand — seven cards each, then split into a five-card high and a two-card low.",
+    target: 'sec-table'
+  },
+  {
+    title: "The house way",
+    body: "The fixed table the dealer follows when splitting their cards. Knowing it tells you exactly when to deviate — and when to just match it.",
+    target: 'sec-houseway'
+  },
+  {
+    title: "Try a hand",
+    body: "Live simulator: 53-card deck, joker semi-wild, $1,000 bankroll. Use the chip row to bet, deal, swap cards between high and low, and settle.",
+    target: 'sec-sim'
+  }
+];
+/* Pick the right set of steps based on a section unique to each page. */
+const tourSteps = document.getElementById('sec-houseway') ? _paigowTour : _baccaratTour;
 
 const tourEl = document.getElementById('tour');
 const tourBackdrop = document.getElementById('tourBackdrop');
@@ -614,4 +647,51 @@ setTimeout(openTour, 1400);
       setActive(current === tier ? null : tier);
     });
   });
+})();
+
+
+/* -------- PAI GOW PANEL 1: split animation --------
+   The defining mechanic of Pai Gow Poker is splitting seven cards into a
+   five-card high hand and a two-card low hand. Panel 01 shows seven cards
+   in a row, then animates two of them dropping forward into a "low" group
+   while the other five stay as the "high" group. Loops while the panel
+   is in view; pauses when scrolled off-screen. */
+(function initSplitDemo() {
+  const split = document.querySelector('.welcome-split');
+  if (!split) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    /* Skip animation but leave the cards in their split state so the
+       layout still teaches the mechanic. */
+    split.dataset.state = 'split';
+    return;
+  }
+
+  let timer = null;
+  let isVisible = true;
+
+  /* Pause off-screen so we don't churn requestAnimationFrame cycles when
+     the panel isn't being looked at. */
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => { isVisible = e.isIntersecting; }),
+      { threshold: 0.2 }
+    );
+    io.observe(split);
+  }
+
+  function tick() {
+    if (!isVisible) {
+      timer = setTimeout(tick, 800);
+      return;
+    }
+    const cur = split.dataset.state;
+    /* Hold each state long enough to read the caption (~3s split, ~2.4s
+       united) — split is the "punchline" so it lingers slightly longer. */
+    const next = (cur === 'united') ? 'split' : 'united';
+    split.dataset.state = next;
+    timer = setTimeout(tick, next === 'split' ? 3000 : 2400);
+  }
+  /* Initial pause lets the user scroll into the panel before the first
+     animation fires — feels less jumpy than starting mid-scroll. */
+  timer = setTimeout(tick, 1400);
 })();
